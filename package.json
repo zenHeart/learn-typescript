@@ -1,0 +1,12 @@
+{
+  "name": "learn-typescript",
+  "version": "1.0.0",
+  "main": "class.js",
+  "scripts": {
+    "build:greet": "tsc 1.prepare/greeter.ts"
+  },
+  "keywords": [],
+  "author": "zenheart <zenheart_register@163.com> (https://blog.zenheart.site/)",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,28 @@
+todos:
+    ☐ 添加 OmitThisParameters 的使用场景
+    ☐ 添加 ThisType 的使用说明 https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypet
+
+backlog:
+    类型:
+        ☐ 搞清楚泛型的使用 https://www.typescriptlang.org/docs/handbook/generics.html
+        ☐ 内建工具类型 https://www.typescriptlang.org/docs/handbook/utility-types.html
+    接口:
+        ☐ 接口合并 https://www.typescriptlang.org/docs/handbook/declaration-merging.html
+    类:
+        ☐ 混入语法 https://www.typescriptlang.org/docs/handbook/mixins.html
+        ☐ 搞清楚高级构造函数的使用 https://www.typescriptlang.org/docs/handbook/classes.html#advanced-techniques
+        ☐ 装饰器语法 https://www.typescriptlang.org/docs/handbook/decorators.html
+    模块:
+        ☐ 模块语法和增强 https://www.typescriptlang.org/docs/handbook/modules.html
+        ☐ 模块解析 https://www.typescriptlang.org/docs/handbook/module-resolution.html
+    命名空间:
+        ☐ https://www.typescriptlang.org/docs/handbook/namespaces.html
+        ☐ https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html
+    jsx:
+        ☐ jsx https://www.typescriptlang.org/docs/handbook/jsx.html
+
+    工具使用:
+        ☐ js 类型检查  https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html
+    工程实践:
+        ☐ 如何进行类型定义 https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html
+        ☐ 工程配置 https://www.typescriptlang.org/docs/handbook/tsconfig-json.html

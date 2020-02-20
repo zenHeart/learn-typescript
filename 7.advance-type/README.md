@@ -1,0 +1,30 @@
+#  类型推导
+
+搞清楚类型推导机制
+类型兼容: https://www.typescriptlang.org/docs/handbook/type-compatibility.html
+
+## 内建的公用类型
+TypeScript 提供了一系列全局类型,用于方便使用。
+
+* 多类型处理
+  * `Record<K,T>` 创建键名属于类型 K ,键值属于 T 的类型,[范例 Record]()
+  * `Pick<T,K>` 创建类型 T 中键名符合类型 K 的子类型,[范例 Record](./pick.ts)
+  * `Omit<T,K>` 创建类型 T 中键名不符合类型 K 的子类型,效果是 `Pick` 相对 [范例 Record](./pick.ts)
+  * `Exclude<T,K>` 创建 T 类型中除去 K 类型后的子类型,类似集合的补集,[范例 Exclude](./exclude.ts)
+  * `Extract<T,K>` 创建同时属于 T,K 类型的子类型,类似集合的交集,[范例 Extract](./extract.ts)
+  * `NonNullable<T>` 创建 T 中非 null 和 undefined 的子类型,效果同 `Exclude<T,null|undefined>`,[范例 NonNullable](./)
+* 函数类子类型
+  * `Parameters<T>` 创建函数类型 T 的参数类型组成的元祖,[范例 Parameters](./parameters.ts)
+  * `ConstructorParameters<T>` 创建构造器类型 T 的参数组成的元祖, [范例 ConstructorParameters]
+  * `ReturnType<T>` 创建函数类型 T 的返回值类型组成的元祖, [范例 ReturnType]()
+  * `InstanceType<T>` 创建类类型 T 对应的实例类型 [范例 InstanceType](./instance-type.ts)
+  * `ThisParameterType<T>` 提取函数类型 T,this 参数对应的类型,[范例 ThisParameterType](./this-parameters-type.ts)
+    > `--strictFunctionTypes` 配置使能后生效
+  * `OmitThisParameters<T>` 创建函数类型 T除去 this 参数后的函数,[范例 OmitThisParameters](./omit-this-parameters.ts)
+    > `--strictFunctionTypes` 配置使能后生效
+  * `ThisType<T>` 创建函数类型 T除去 this 参数后的函数,[范例 ThisType](./this-type.ts)
+    > `--noImplicitThis` 配置使能后生效
+* 类型修改
+  * `Readonly<T>` 创建类型 T 的所有属性为只读的类型,[范例 Readonly](./readonly.ts)
+  * `Required<T>` 创建类型 T 的所有属性为必选的类型 [范例 Required](./required.ts)
+  * `Partial<T>` 创建属于类型 T 的子类型,[范例 Partial](./partial.ts)
