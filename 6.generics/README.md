@@ -1,66 +1,97 @@
 # 泛型(generic)
 
-一个数组生成器,数组的值只包含一种类型,但该类型可能为字符串,数值,或对象。如何定义该函数实现对上述规则的检查,采用泛型即可定义通用类型模板解决上述问题?
+```js
+function createArr(length,data) {
+    return [val1,val2,...]
+}
+```
+一个创建数组的函数 `createArr`,返回的数组元素 `val1,val2` 为相同类型,但该类型可能为字符串,数值,或对象。如何定义该函数类型实现对上述规则的检查,采用泛型即可定义通用类型模板解决上述问题?
 
 [toc]
 
-## 泛型定义
-### 函数泛型定义
-1. 单一参数,[示例函数泛型定义](./generics.ts)
+## 函数泛型
+1. 在函数名后添加 `<T>` ,T 表示任意类型[示例单一参数设为泛型](./generics.ts) 
 
     ```ts
-    function functionName<T>(arg:T):T {
+    // 函数 foo 入参和返回值必须为类型 T, T 可能为 number,string 或任意类型
+    function foo<T>(arg:T):T {
         // ...
         return arg;
     }
+
     ```
-2. 多个参数,[示例函数泛型多个参数](./generics-multi-arg.ts)
+2. 可以同时申明多个泛型符号 `<T,U>`, [示例多个参数设为泛型](./generics-multi-arg.ts)
 
     ```ts
-    function functionName<T,U>(a1:T,a2:U):void {
-        //
+    // 函数可以交换两种包含特定类型的元祖
+    function swap<T,U>(tuple:[T,U]):[U,T] {
+        return [tuple[1],tuple[0]]
     }
     ```
 
+    > 泛型名称 `T,U` 可以为任意值,只是一个指示符号,通常用 `T` 表示
 
-**知识点:**
+3. 函数调用时可显示采用 `<类型>` 的方式指示类型,[示例显示指示泛型](./generics-identity.ts)
 
-1. 泛型名称 `T,U` 可以为任意值,只是一个指示符号,通常用 `T` 表示
+    ```ts
+    function foo<T>(arg:T):T {
+        return T
+    }
+    // 显示指示类型为 number
+    let a = foo<number>(1)
+    ```
 
+    > 实际上 TypeScript 自带的类型推导可以解决此问题，一般在如下条件需要显示说明
+    > 1. 默认类型推导无法正确工作
 
+4. 采用泛型定义变量为函数类型,[示例泛型变量](./generics-variable.ts)
 
-### 接口泛型定义
+    ```ts
+    function identity<T>(arg: T):T {
+        return arg;
+    }
+    // 表示 myIdentity 变量必须为函数,且入参和返回值类型相同
+    let myIdentity: <U>(arg: U) => U = identity;
+    // 效果同上
+    let myIdentity:{<T>(arg:T):T} = identity;
+    ```
+
+## 接口泛型
+函数泛型定义了特定函数的类型特征,采用接口泛型定义泛型模板,约束相似函数。
 
 1.  通用定义,[示例泛型接口定义](./generics-interface.ts)
 
     ```ts
+    // 定义输入参数和返回值为类型 T 的泛型函数
     interface InterfaceName<T> {
         (arg:T):T;
     }
 
-    // 此方式可在定义时确定泛型的实际类型
-    let val:InterfaceName<number>;
-    ```
-
-2. `<T>` 放入接口内
-
-    ```ts
-    interface InterfaceName {
+    // 效果同上
+    interface InterfaceName1 {
         <T>(arg:T):T;
     }
 
-    let val:InterfaceName;
+    // 表示参数类型必须为函数且函数输入和返回值必须为 number
+    let val:InterfaceName<number>;
 
+    // 表示参数类型必须为函数且函数输入和返回值类型必须相同
+    // 由于 InterfaceName1 <T> 写在接口内部,无法采用 InterfaceName1<number> 限定函数只接受特定类型参数
+    let val:InterfaceName1;
+    
     ```
+
+    > 一半采用 `InterfaceName` 的申明方式,优点是可以在后续定义变量类型时进一步限定
+
 
 
 ## 泛型约束
-如何设置泛型对应的类型是类数组类型,采用泛型约束实现对特定类型的限制
+由于泛型表示任意类型,如何限定任意类型具有某种特征,采用泛型约束语法实现
 
-1. 泛型约束,[范例泛型约束](./generics-constraints.ts)
+1. 通过 `extends` 让类型继承接口特性,[范例泛型约束](./generics-constraints.ts)
 
     ```ts
-    // 1. 定义类型的约束条件
+    // 1. 采用接口定义类型的约束条件
     interface Lengthwise {
         length: number;
     }
@@ -71,6 +102,38 @@
     return arg;
     } 
     ```
+
+## 综合使用
+1. 使用 `keyof` 语法提取泛型类型的键作为泛型参数限制,[]
+    
+    ```ts
+    function getProperty<T, K extends keyof T>(obj: T,key:K) {
+        return obj[key]
+    }
+    let x= {a:1,b:2,c:3};
+
+    getProperty(x,"a"); // okay
+    // 由于没有此键名会抛出错误
+    getProperty(x,"m");
+    ```
+2. 采用 `new():T` 限制工厂方法为构造器,[范例构造器限制]()
+
+    ```ts
+    // 限制输入参数 c 必须为构造器类型
+    function create<T>(c:new ()=> T):T {
+        return new c();
+    }
+    ```
+
+
+## 总结
+1. 利用 `<T>` 的方式申明泛型符号
+   1. 采用 `a:<T>(T)=>T`,`a:{<T>(T):T}` 的方式限制变量为特定函数泛型
+2. 利用 `interface <T>` 定义接口泛型进行复用
+3. 利用 `T extends type` 的方式约束泛型
+4. 通过 `K keyof T`,`T[]`,`new() => T` 等方式在基础泛型上衍生新的泛型
+
+泛型及其灵活,参考 [高级类型](../7.advance-type/README.md) 章节理解 TypeScript 提供的内建泛型。
 
 
 ## 参考资料

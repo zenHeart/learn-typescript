@@ -26,3 +26,4 @@ backlog:
     工程实践:
         ☐ 如何进行类型定义 https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html
         ☐ 工程配置 https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+        ☐ 语言指南 spec https://github.com/microsoft/TypeScript/blob/master/doc/spec.md
