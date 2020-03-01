@@ -1,0 +1,38 @@
+# 命名空间
+除了采用模块语法, 也可采用命名空间组织一系列的申明。
+
+由于 es6 的模块系统已经实现了模块作用域的划分。
+不建议使用 namespace 特性。此处只做了解即可。
+
+## 申明命名空间
+采用 `namespace <name> { }` 申明命名空间。
+参看 [申明命名空间](./namespace.ts)
+
+命名空间的文件会被编译为如下形式
+
+```js
+var Validation;
+(function (Validation) {
+    // ... 
+})(Validation || (Validation = {}));
+```
+
+多个文件可以申明相同的命名空间。参看示例 [多文件复用命名空间](./same-namespace/test.ts)
+
+采用 `npm run build` 运行示例。观察编译结果
+
+```js
+var Validation;
+// 注入 LettersOnlyValidator1 方法
+(function (Validation) {
+    // ... 
+})(Validation || (Validation = {}));
+
+// 注入 ZipCodeValidator1 方法
+(function (Validation) {
+    // ... 
+})(Validation || (Validation = {}));
+```
+
+多个文件采用相同命名空间会导致产生多个闭包函数,注入方法。
+并且配置也更复杂。参看 [无用的命名空间](https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html#needless-namespacing) 进一步理解采用模块替换命名空间的方法。

@@ -1,0 +1,61 @@
+# 申明文件
+
+当开发的模块作为第三方的包使用时, 如何保证他人可以利用模块中的类型检查,申明文件通过暴露模块的内部类型实现了此功能。
+
+
+## 申明文件类型
+根据包被使用的方式,定义申明文件的类型包含如下几类。
+
+* **全局包申明** 例如 jQuery 等在全局对象上挂载方法的库
+* **模块包申明** 采用 CommonJS 等规范等模块规范,被使用的包,大部分 node 环境下使用的 npm 包都符合此风格
+* ****
+
+
+
+### 全局申明
+全局申明,当导入第三方库时可能可能会在全局环境绑定。变量和方法。
+通过 `declare` 语句提前申明这些变量,避免 TypeScript 检查错误。
+参见示例 [全局申明](./global-declare.ts)
+
+```ts
+// 声明全局变量 gVar
+declare var gVar: number;
+// 申明全局函数
+declare function greet(str: string): void;
+// 申明全局常量
+declare const foo2: string;
+
+gVar = 1;
+console.log(gVar);
+```
+
+> 注意全局的常量和函数在这里只进行了申明,定义参见
+
+
+## 定义申明文件
+
+
+
+## 使用和发布申明文件
+
+当发布自定义包或引入第三方的包时,如何暴露或引用类型申明,方法如下
+
+### 自定义包的处理
+若采用 TypeScript 编写的应用编译时添加 `--declaration` 会自动产生申明文件。
+
+对于 js 编写的包, TypeScript 会利用如下方式解析申明文件。
+
+1. 若包根目录定义了 `index.d.ts` 会被解析
+2. 若 `package.json` 定义了 `files` 字段自行编写申明文件后,加入此字段
+3. 若未定义则需在 `package.json` 使用 `types` 或 `typings` 字段包含申明文件。
+
+
+### 第三方包
+去 [types](https://microsoft.github.io/TypeSearch/) 搜索第三方包,安装对应的类型申明。
+
+若未找到申明文件则参考 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 定义类型包提交到社区。
+
+
+
+## 总结
+TypeScript 采用申明文件解决不同项目之间类型共享的问题。

@@ -1,0 +1,3 @@
+export = {
+  demo: 1
+};

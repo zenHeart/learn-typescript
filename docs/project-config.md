@@ -1,0 +1,66 @@
+# 项目配置
+
+
+## tsconfig.json
+通过 `tsconfig.json` 配置 tsc 的编译规则,可采用 `tsc --init` 创建配置文件。
+
+### 配置文件查找规则
+TypeScript 基于如下机制查找配置文件
+
+* **默认查找机制**
+  1. 搜索当前目录是否包含 `tsconfig.json`
+  2. 若没有则逐级向上层目录查找
+* **指定配置目录**  
+  1. 若设置了 `--project,-p` 则根据指定的路径查找配置文件 `tsconfig.json` 或合法的 `.json` 配置文件。
+
+> 注意指定了配置目录后,默认查找机制会失效
+
+### 配置选项
+TypeScript 提供了大量的配置项用于设定 `tsc` 的编译规则。
+详见 [配置项](https://www.typescriptlang.org/v2/en/tsconfig#allowJs)
+
+常用配置如下
+
+| 配置项   | 功能                                                                                                          |
+| :------- | :------------------------------------------------------------------------------------------------------------ |
+| `outDir` | 设置编译结果的输出目录,默认为 `ts` 文件相同路径,**注意设置只改编译的输出目录,之前的文件的相对目录关系还存在** |
+
+
+
+## 命令行参数
+也可通过命令行参数配置 tsc 的行为,示例命令如下
+
+```bash
+# 编译当前目录下所有文件
+tsc
+
+# 只编译特定文件
+tsc index.ts
+
+# 编译特定目录下文件
+tsc src/*.js
+
+# 传入指定配置编译文件
+tsc --project tsconfig.json src/*.ts
+```
+
+详细的命令行参数参见 [Compiler Options](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+
+常用配置如下表
+
+| 配置名             | 功能                 | 使用场景                                                      |
+| :----------------- | :------------------- | :------------------------------------------------------------ |
+| `--allowJs`        | 允许编译 js 文件     |
+| `--checkJs`        | 检查 js 文件         | 结合 allowJs 配置利用 TypeScript 默认推导功能实现对 js 的检查 |
+| `declaration`,`-d` | 创建申明文件         | 当仓库采用 TypeScript 编写时,基于此配置生成申明文件           |
+| `--init`           | 创建 `tsconfig.json` | 初始化配置文件时                                              |
+
+
+## 编译优化
+### 项目索引
+<!-- TODO: 补充实际的使用案例 -->
+基于项目索引改善 TypeScript 的编译性能,详见 [Project Reference](https://www.typescriptlang.org/docs/handbook/project-references.html)
+
+## 集成构建工具
+除了使用默认的 `tsc` 也可采用第三方构建工具编译 TypeScript。
+详细资料参见 [集成构建](https://www.typescriptlang.org/docs/handbook/integrating-with-build-tools.html)

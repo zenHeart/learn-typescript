@@ -110,3 +110,5 @@ dist
 .vscode-test
 
 **/*.js
+
+playground
