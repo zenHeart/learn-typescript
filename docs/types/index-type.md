@@ -1,4 +1,4 @@
-# class
+# 索引类型
 该章节讲解环境配置和基本使用
 详见 [interface](https://www.typescriptlang.org/docs/handbook/interfaces.html)
 

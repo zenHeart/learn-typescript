@@ -138,3 +138,13 @@ sidebar: auto
 7. 工具特性
    1. 三元指令 [Triple-Slash Directives](https://www.typescriptlang.org/v2/docs/handbook/triple-slash-directives.html)
       1. `/// <reference path="..." />` 索引额外的文件编译
+
+1. 类型系统 如何定义类型
+2. 静态类型检测 如何识别类型错误
+   1. 类型推导
+   2. 类型注释
+3. 运行时类型检测
+   1. 类型守卫
+4. 类型导出
+   1. 申明
+5. 工具特性
