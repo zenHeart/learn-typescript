@@ -35,3 +35,8 @@
 
 
 ## 接口扩展
+
+## 函数接口
+注意 具名函数接口为对象属性
+
+接口典型作用：https://devblogs.microsoft.com/typescript/walkthrough-interfaces/
