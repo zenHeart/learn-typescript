@@ -18,4 +18,3 @@
 * BigInt
 * 字面量类型
 * 枚举类型
---strictNull 操作符
