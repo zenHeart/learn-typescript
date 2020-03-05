@@ -3,6 +3,10 @@ let s: String = new String('1');
 // 限制对象为 number 的原始封装类型和字符串,不建议使用,此处只是示例说明
 let n: Number = new Number(1);
 
+// 限制对象为 Error 的实例
+let e: Error = new Error('foo');
+e = new TypeError('foo'); // 合法 TypeError 继承自 Error
+
 // 限制对象为 Date 的实例类型
 let d: Date = new Date('2019');
 // 限制对象为函数类型

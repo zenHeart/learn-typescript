@@ -20,7 +20,7 @@ TypeScript 是微软开源的编程语言。属于 JavaScript 语言的超集。
 
 JavaScript 属于弱类型语言，这导致在代码编写过程中，若函数未对输入参数做出严格限制，极易出现异常，例如对象检查未排除 null,导致类似 [ReferenceError: "x" is not defined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_defined) 的错误。
 
-**2. 养成类型思维，规范代码结构，提高可维护性**
+**2. 类型系统可以解释系统结构辅助设计**
 
 基于 TypeScript 提供的类型系统，开发者在代码设计初期就需要考虑各种类型限制，这实际上可以帮助开发者提炼项目的核心数据结构，辅助设计。并且项目新成员可以根据项目暴露的核心类型结构理解项目，增强代码可读性和维护性。
 
