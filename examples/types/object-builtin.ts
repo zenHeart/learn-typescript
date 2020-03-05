@@ -13,7 +13,13 @@ let p: Promise<number> = Promise.resolve(1); // 注意这里的尖括号后续�
 let setVal: Set<number> = new Set([1, 2, 3]);
 // 限制为对象类型
 let obj: Object = new Object(1);
-obj = d; // 合法, 应为 d 为对象
-obj = f; // 合法,应为 f 为对象
+obj = s; // 合法
+obj = n; // 合法
+obj = d; // 合法
+obj = f; // 合法
 obj = {}; // 合法,此处定义了字面量对象
-obj = 12; // 合法,此处定义了字面量对象
+obj = Object.create(null); // 合法虽然原型链为 null
+obj = 12; // 合法
+obj = 'foo'; // 合法
+obj = null; // 非法
+obj = undefined; // 非法

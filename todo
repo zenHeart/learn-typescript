@@ -1,31 +1,28 @@
 todos:
-    类型:
-        ✔ 内建工具类型 https://www.typescriptlang.org/docs/handbook/utility-types.html @done(20-02-21 20:52)
-        ✔ 添加 OmitThisParameters 的使用场景 @done(20-02-21 21:15)
-        ☐ 添加 ThisType 的使用说明 https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypet
-    新特性:
-        ✔ 搞清楚泛型的使用 https://www.typescriptlang.org/docs/handbook/generics.html @done(20-02-21 20:51)
+    ✔ 内建工具类型 https://www.typescriptlang.org/docs/handbook/utility-types.html @done(20-02-21 20:52)
+    ✔ 添加 OmitThisParameters 的使用场景 @done(20-02-21 21:15)
+    ✔ 混入语法 https://www.typescriptlang.org/docs/handbook/mixins.html @done(20-02-26 16:35)
+    ✔ 搞清楚高级构造函数的使用 https://www.typescriptlang.org/docs/handbook/classes.html#advanced-techniques @done(20-02-26 17:10)
+    ✔ 搞清楚泛型的使用 https://www.typescriptlang.org/docs/handbook/generics.html @done(20-02-21 20:51)
+    ✔ 混入语法 https://www.typescriptlang.org/docs/handbook/mixins.html @done(20-02-26 16:35)
+    ✔ 搞清楚高级构造函数的使用 https://www.typescriptlang.org/docs/handbook/classes.html#advanced-techniques @done(20-02-26 17:10)
+    ✔ 模块语法和增强 https://www.typescriptlang.org/docs/handbook/modules.html @done(20-02-26 20:36)
+    ✔ 模块解析 https://www.typescriptlang.org/docs/handbook/module-resolution.html @done(20-02-27 16:21)
+    ✔ https://www.typescriptlang.org/docs/handbook/namespaces.html @done(20-02-27 17:30)
+    ✔ https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html @done(20-02-27 17:30)
+    ✔ js 类型检查  https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html @done(20-02-28 14:21)
+    ✔ 工程配置 https://www.typescriptlang.org/docs/handbook/tsconfig-json.html @done(20-02-28 20:28)
+    ✔ 如何进行类型定义 https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html @done(20-02-28 19:29)
 backlog:
+    类型:
+        ☐ 添加 ThisType 的使用说明 https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypet
     申明:
         ☐ 申明合并 https://www.typescriptlang.org/docs/handbook/declaration-merging.html
     类:
-        ✔ 混入语法 https://www.typescriptlang.org/docs/handbook/mixins.html @done(20-02-26 16:35)
-        ✔ 搞清楚高级构造函数的使用 https://www.typescriptlang.org/docs/handbook/classes.html#advanced-techniques @done(20-02-26 17:10)
         ☐ 装饰器语法 https://www.typescriptlang.org/docs/handbook/decorators.html
-    模块:
-        ✔ 模块语法和增强 https://www.typescriptlang.org/docs/handbook/modules.html @done(20-02-26 20:36)
-        ✔ 模块解析 https://www.typescriptlang.org/docs/handbook/module-resolution.html @done(20-02-27 16:21)
-    命名空间:
-        ✔ https://www.typescriptlang.org/docs/handbook/namespaces.html @done(20-02-27 17:30)
-        ✔ https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html @done(20-02-27 17:30)
     jsx:
         ☐ jsx https://www.typescriptlang.org/docs/handbook/jsx.html
-
-    工具使用:
-        ✔ js 类型检查  https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html @done(20-02-28 14:21)
     工程实践:
-        ✔ 如何进行类型定义 https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html @done(20-02-28 19:29)
-        ✔ 工程配置 https://www.typescriptlang.org/docs/handbook/tsconfig-json.html @done(20-02-28 20:28)
         ☐ 语言指南 spec https://github.com/microsoft/TypeScript/blob/master/doc/spec.md
     语言特性:
         ☐ 类型判断中 & 等额外扩充的逻辑符号含义
