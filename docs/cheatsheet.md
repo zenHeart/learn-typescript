@@ -23,7 +23,8 @@ sidebar: auto
              4.  索引类型约束字段，详见 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#excess-property-checks>
              5.  综合 readonly 和索引类型定义
 5. 类
-  1. 访问控制
+  1. 可以直接在构造器上申明 public 且不用赋值,详见 public [scale](https://www.typescriptlang.org/docs/handbook/classes.html#static-properties)
+  2. 访问控制
      1. private 类中才可访问，实例无法访问
      2. protected 类和子类才可访问，实例无法访问
         1. 构造函数也可限制，表示只有扩展类才可实例化
@@ -34,17 +35,17 @@ sidebar: auto
      2. 访问器
         1. 只有 get 自动推到为 readonly
      3. 静态成员
-  2. 构造器约束和实例约束 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#difference-between-the-static-and-instance-sides-of-classes>
-  3. 继承
+  3. 构造器约束和实例约束 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#difference-between-the-static-and-instance-sides-of-classes>
+  4. 继承
      1. `implements` 实现接口
      2. `extends shape,..` 实现d多继承，详见 https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#extending-interfaces
      3. 组合 `implements extend` 使用
      <!--TODO: 5 没看懂  -->
      1. 接口继承类类型 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#interfaces-extending-classes> 没看懂此特性
-  4. 抽象类
+  5. 抽象类
      1. 抽象方法
-  5. 构造器类型和实例类型
-  6. 接口继承类类型 https://www.typescriptlang.org/v2/docs/handbook/classes.html#using-a-class-as-an-interface
+  6. 构造器类型和实例类型
+  7. 接口继承类类型 https://www.typescriptlang.org/v2/docs/handbook/classes.html#using-a-class-as-an-interface
   <!-- TODO: 添加装饰器使用说明，不建议使用了解即可 -->
   1. 装饰器 https://www.typescriptlang.org/v2/docs/handbook/decorators.html
   2. 混入 https://www.typescriptlang.org/v2/docs/handbook/mixins.html

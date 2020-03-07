@@ -1,4 +1,5 @@
 class Octopus {
+  // 属性为只读可选
   readonly name?: string;
   readonly numberOfLegs: number = 8;
   constructor(theName?: string) {
