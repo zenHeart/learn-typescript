@@ -1,4 +1,4 @@
-abstract class Animal {
+abstract class AbstractAnimal {
   // 抽象方法,继承的类必须实现
   abstract makeSound(): void;
   // 抽象属性,继承的类必须实现
@@ -8,7 +8,7 @@ abstract class Animal {
   }
 }
 
-class Tiger extends Animal {
+class Tiger extends AbstractAnimal {
   type = 'Felidae';
   makeSound() {
     console.log('roar');
@@ -21,7 +21,7 @@ t.move();
 console.log(t);
 
 // 报错, 抽象类不能实例化
-console.log(new Animal());
+console.log(new AbstractAnimal());
 
 // 抽象类会产生运行时代码
 console.log(Animal);

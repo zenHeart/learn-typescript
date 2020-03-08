@@ -1,33 +1,15 @@
-/**
- * 将泛型定义为接口类型
- */
-
-interface GenericIdentityFn<T> {
-  (arg: T): T;
-}
-
-interface GenericIdentityFn1 {
+// 定义输入参数和返回值为类型 T 的泛型函数
+interface InterfaceName {
   <T>(arg: T): T;
 }
 
-function foo(arg) {
-  return arg;
+// 效果同上,注意泛型申明提升到了接口名后
+interface InterfaceName1<T> {
+  (arg: T): T;
 }
 
-// 约定函数类型输入和返回值必须为数值
-let myIdentity: GenericIdentityFn<number> = foo;
+// 无法采用类型断言,限制为特定类型
+let val1: InterfaceName;
 
-// 原定函数输入和返回值类型必须相同
-let myIdentity1: GenericIdentityFn1 = foo;
-
-// 由于泛型写在接口内部无法实现 GenericIdentityFn 指定特定类型的方法
-// let myIdentity2: GenericIdentityFn1<number> = foo;
-
-// 该函数只接受为 number 类型
-console.log(myIdentity(1));
-// 输入字符串会报错
-// console.log(myIdentity('1'));
-
-// 该函数未限定输入类型所以数值和字符串均可
-console.log(myIdentity1('1'));
-console.log(myIdentity1(1));
+// 表示参数类型必须为函数且函数输入和返回值必须为 number 类型
+let val2: InterfaceName1<number>;

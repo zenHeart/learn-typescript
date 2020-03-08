@@ -46,8 +46,10 @@ foo = 'demo';
 
 示例说明除了标准的 JSDoc 类型， 也可在注释中利用  TypeScript 定义的类型语法限定变量。
 
-详细的私用清单参见 [Supported JSDoc](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#supported-jsdoc)
+* [Supported JSDoc](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#supported-jsdoc)
 
+扩充内容包括:
+* [3.8 属性修饰符](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#jsdoc-property-modifiers)
 
 
 
@@ -66,3 +68,4 @@ foo = 'demo';
 
 
 javascript 迁移到 typescript  https://devblogs.microsoft.com/typescript/how-to-upgrade-to-typescript-without-anybody-noticing-part-1/
+

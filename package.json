@@ -5,7 +5,8 @@
   "scripts": {
     "start": "vuepress dev  docs",
     "build": "vuepress build docs",
-    "deploy": "./scripts/deploy.sh"
+    "deploy": "./scripts/deploy.sh",
+    "test": "jest --watch"
   },
   "keywords": [],
   "author": "zenheart <zenheart_register@163.com> (https://blog.zenheart.site/)",
@@ -16,5 +17,9 @@
     "markdown-it-task-lists": "^2.1.1",
     "typescript": "^3.8.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1"
+  }
 }

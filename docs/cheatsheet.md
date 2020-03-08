@@ -5,14 +5,62 @@ sidebar: auto
 # 知识点
 
 ## 类型系统
+### 类型别名
+`type` 定义类型别名
+
+类型别名和接口的区别 https://www.typescriptlang.org/v2/docs/handbook/advanced-types.html#interfaces-vs-type-aliases
+   
+### 接口
+* [interface 和 type 区别](https://www.typescriptlang.org/docs/handbook/advanced-types.html#interfaces-vs-type-aliases)
+* [interface and type](https://stackoverflow.com/questions/37233735/typescript-interfaces-vs-types)
+
+### 元祖
+* [元祖之外的元素为元素的联合类型](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-3.html#tuple-types)
+
+### enum
+* [const enum](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#const-enum-completely-inlined-enums) 运行时编译为内联内容
+6. 枚举的类型推导 
+1. 枚举成员作为类型限制符号 https://www.typescriptlang.org/v2/docs/handbook/enums.html#union-enums-and-enum-member-types
+<!-- TODO: 没看懂 -->
+1. Ambient enums https://www.typescriptlang.org/v2/docs/handbook/enums.html#ambient-enums 
+
+
+### 类
+4. 类
+  1. 可以直接在构造器上申明 public 且不用赋值,详见 public [scale](https://www.typescriptlang.org/docs/handbook/classes.html#static-properties)
+* **访问控制**
+  * [protected](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#protected) 类和子类才可访问
+     1. private 类中才可访问，实例无法访问
+     2.  ，实例无法访问
+        1. 构造函数也可限制，表示只有扩展类才可实例化
+     3. public 类实例均可以访问
+     4. 结合 readonly 限制属性
+     <!-- TODO: 构造函数名字为只读为什么 -->
+     1. 构造函数名字限制为只读，没看懂 https://www.typescriptlang.org/v2/docs/handbook/classes.html#parameter-properties
+     2. 访问器
+        1. 只有 get 自动推到为 readonly
+     3. 静态成员
+  1. 构造器约束和实例约束 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#difference-between-the-static-and-instance-sides-of-classes>
+  2. 继承
+     1. `implements` 实现接口
+     2. `extends shape,..` 实现d多继承，详见 https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#extending-interfaces
+     3. 组合 `implements extend` 使用
+     <!--TODO: 5 没看懂  -->
+     1. 接口继承类类型 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#interfaces-extending-classes> 没看懂此特性
+  3. 抽象类
+     1. 抽象方法
+  4. 构造器类型和实例类型
+  5. 接口继承类类型 https://www.typescriptlang.org/v2/docs/handbook/classes.html#using-a-class-as-an-interface
+  <!-- TODO: 添加装饰器使用说明，不建议使用了解即可 -->
+  1. 装饰器 https://www.typescriptlang.org/v2/docs/handbook/decorators.html
+  2. 混入 https://www.typescriptlang.org/v2/docs/handbook/mixins.html
+
 1. 原始类型
    1. 基本类型 es6 的基础类型
    2. 特殊基础类型 void,never,any
 2. 对象类型 object 所有 js 引用类型
    > `--strictNullChecks` 默认关闭，此时基础类型值 null,undefined 可以赋值给其他类型，因为 null,undefined 是所有其他类型的子类型
-3. 元祖 
-   1. 元祖之外的元素为联合类型 https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-3.html#tuple-types
-4. 接口类型
+3. 接口类型
    1. 采用 `?:` 声明可选参数
    2. 采用 `readonly` 修饰只读参数
    3.  `ReadonlyArray<T>` 修饰只读数组
@@ -22,33 +70,6 @@ sidebar: auto
              3.  索引类型实现扩展 `[index:string]:any`
              4.  索引类型约束字段，详见 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#excess-property-checks>
              5.  综合 readonly 和索引类型定义
-5. 类
-  1. 可以直接在构造器上申明 public 且不用赋值,详见 public [scale](https://www.typescriptlang.org/docs/handbook/classes.html#static-properties)
-  2. 访问控制
-     1. private 类中才可访问，实例无法访问
-     2. protected 类和子类才可访问，实例无法访问
-        1. 构造函数也可限制，表示只有扩展类才可实例化
-     3. public 类实例均可以访问
-     4. 结合 readonly 限制属性
-     <!-- TODO: 构造函数名字为只读为什么 -->
-     1. 构造函数名字限制为只读，没看懂 https://www.typescriptlang.org/v2/docs/handbook/classes.html#parameter-properties
-     2. 访问器
-        1. 只有 get 自动推到为 readonly
-     3. 静态成员
-  3. 构造器约束和实例约束 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#difference-between-the-static-and-instance-sides-of-classes>
-  4. 继承
-     1. `implements` 实现接口
-     2. `extends shape,..` 实现d多继承，详见 https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#extending-interfaces
-     3. 组合 `implements extend` 使用
-     <!--TODO: 5 没看懂  -->
-     1. 接口继承类类型 <https://www.typescriptlang.org/v2/docs/handbook/interfaces.html#interfaces-extending-classes> 没看懂此特性
-  5. 抽象类
-     1. 抽象方法
-  6. 构造器类型和实例类型
-  7. 接口继承类类型 https://www.typescriptlang.org/v2/docs/handbook/classes.html#using-a-class-as-an-interface
-  <!-- TODO: 添加装饰器使用说明，不建议使用了解即可 -->
-  1. 装饰器 https://www.typescriptlang.org/v2/docs/handbook/decorators.html
-  2. 混入 https://www.typescriptlang.org/v2/docs/handbook/mixins.html
 5. 函数
   1. 参数和返回值的注解
   2. 内联函数注解
@@ -58,22 +79,6 @@ sidebar: auto
   5. this 限制 https://www.typescriptlang.org/v2/docs/handbook/functions.html#this-parameters
   6. 重载
   7. 解构标注
-6. 枚举类型
-  1. 数值类型枚举
-  2. 字符串枚举
-  3. 混合枚举，不建议使用
-  4. 常量枚举
-  5. 枚举初始化
-     1. 基本规则
-     2. 初始值后的计算规则
-     3. 采用表达式初始化
-  6. 枚举的类型推导 
-  7. 枚举的运行时特性
-  8. 枚举的反向映射特性
-  9. 高级用法
-     1. 枚举成员作为类型限制符号 https://www.typescriptlang.org/v2/docs/handbook/enums.html#union-enums-and-enum-member-types
-     <!-- TODO: 没看懂 -->
-     1. Ambient enums https://www.typescriptlang.org/v2/docs/handbook/enums.html#ambient-enums 
 7. 组合类型
   1.  联合类型 1.4 加入 https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-4.html#union-types
   2. 交叉类型
@@ -89,11 +94,7 @@ sidebar: auto
    1. 字面量类型
       1.  数值字面量
       2.  字符串字面量 https://github.com/Microsoft/TypeScript/pull/5185
-   2. 类型别名
-      1.  `type`
-      2.  泛型的类型别名
-      3.  类型别名和接口的区别 https://www.typescriptlang.org/v2/docs/handbook/advanced-types.html#interfaces-vs-type-aliases
-   3. `Discriminated Unions` https://www.typescriptlang.org/v2/docs/handbook/advanced-types.html#discriminated-unions
+  3. `Discriminated Unions` https://www.typescriptlang.org/v2/docs/handbook/advanced-types.html#discriminated-unions
    4. this 的多态 https://www.typescriptlang.org/v2/docs/handbook/advanced-types.html#polymorphic-this-types
    5. 索引类型
       1. `keyof` 后去泛型的字面量联合类型
@@ -107,6 +108,11 @@ sidebar: auto
    1.  模块解析
 11. 命名空间
 12. JSX 的类型系统
+
+### 函数
+
+* 函数重载
+  * [常量重载](https://devblogs.microsoft.com/typescript/working-on-typescript-0-9-generics-overload-on-constants-and-compiler-performance/)
 
 ## 类型断言
 1. `<>` 
@@ -167,4 +173,7 @@ https://www.typescriptlang.org/v2/docs/handbook/type-inference.html
 
 vue 使用 ts https://github.com/DanielRosenwasser/typescript-vue-todomvc
 
+
+## 配置
+* [noEmitOnError](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#-noemitonerror-commandline-option) 类型检查出错阻止编译
 --strictNull 操作符
