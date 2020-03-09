@@ -19,7 +19,9 @@ b = 'bar';
 TypeScript 内部会对内容进行智能推导来判断类型是否恰当，
 具体说明参看 [TypeScript 检查 js 文件](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html#constructor-functions-are-equivalent-to-classes)
 
-
+:::tip
+`// @ts-nocheck` 也支持在 TypeScript 文件使用,详见 [// @ts-nocheck in TypeScript Files](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#-ts-nocheck-in-typescript-files)
+:::
 
 ### 结合 JSDoc
 [JSDoc](https://jsdoc.app/) 是一个通过注释生成文档的工具。

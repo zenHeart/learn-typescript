@@ -1,3 +1,5 @@
+[![time tracker](https://wakatime.com/badge/github/zenHeart/learn-typescript.svg)](https://wakatime.com/badge/github/zenHeart/learn-typescript)
+
 # TypeScript 学习笔记
 
 ## 概述

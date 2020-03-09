@@ -28,6 +28,8 @@ backlog:
         ☐ 类型判断中 & 等额外扩充的逻辑符号含义
 
 backlog:
+    语言特性:
+        ☐ 迭代器知识 [Stricter Generators](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#stricter-generators)
     ☐ typescript 如何优雅的使用全局变量
     ☐ 采用 decalre const a 的方式申明全局常量无法对 a 赋值?
         ☐ https://stackoverflow.com/questions/54800975/why-is-declare-const-foo-3-legal-in-typescript
