@@ -13,23 +13,18 @@ todos:
     ✔ js 类型检查  https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html @done(20-02-28 14:21)
     ✔ 工程配置 https://www.typescriptlang.org/docs/handbook/tsconfig-json.html @done(20-02-28 20:28)
     ✔ 如何进行类型定义 https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html @done(20-02-28 19:29)
+    ✔ 补充混入类型 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#support-for-mix-in-classes @done(20-03-11 16:19)
+    ✔ 迭代器知识 [Stricter Generators](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#stricter-generators) @done(20-03-11 16:21)
+    ✔ 补充抽象构造器和访问属性语法  https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#private-and-protected-constructors @done(20-03-13 11:04)
+    ✔ Augmenting global/module scope from modules https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#augmenting-globalmodule-scope-from-modules @done(20-03-13 11:06)
+    ✔ 控制流错误分析 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#control-flow-analysis-errors @done(20-03-13 11:25)
+
 backlog:
     类型:
         ☐ 添加 ThisType 的使用说明 https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypet
-    申明:
-        ☐ 申明合并 https://www.typescriptlang.org/docs/handbook/declaration-merging.html
     类:
         ☐ 装饰器语法 https://www.typescriptlang.org/docs/handbook/decorators.html
     jsx:
         ☐ jsx https://www.typescriptlang.org/docs/handbook/jsx.html
-    工程实践:
-        ☐ 语言指南 spec https://github.com/microsoft/TypeScript/blob/master/doc/spec.md
-    语言特性:
-        ☐ 类型判断中 & 等额外扩充的逻辑符号含义
-
-backlog:
-    语言特性:
-        ☐ 迭代器知识 [Stricter Generators](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#stricter-generators)
-    ☐ typescript 如何优雅的使用全局变量
-    ☐ 采用 decalre const a 的方式申明全局常量无法对 a 赋值?
-        ☐ https://stackoverflow.com/questions/54800975/why-is-declare-const-foo-3-legal-in-typescript
+    没看懂:
+        ☐ 结构化标识类 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#improved-handling-of-structurally-identical-classes-and-instanceof-expressions

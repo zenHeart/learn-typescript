@@ -1,5 +1,6 @@
 // 定义 number 类型数组
 let numArr: number[] = [1, 2, 3];
+
 // 合法
 numArr.push(12);
 // 报错推入数据非 number 类型
