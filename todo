@@ -20,6 +20,8 @@ todos:
     ✔ 控制流错误分析 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#control-flow-analysis-errors @done(20-03-13 11:25)
 
 backlog:
+    阅读:
+        ☐ 新版 typescript 手册 https://microsoft.github.io/TypeScript-New-Handbook/outline/
     类型:
         ☐ 添加 ThisType 的使用说明 https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypet
     类:
