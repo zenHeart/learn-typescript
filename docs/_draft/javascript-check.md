@@ -54,6 +54,10 @@ foo = 'demo';
 * [3.8 属性修饰符](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#jsdoc-property-modifiers)
 
 
+## 注释汇总
+<!-- TODO: ts-expect-error -->
+在 ts 3.9 中引入了注释功能用于显示控制错误抛出。
+采用 `@ts-expect-error` 静默错误。详细信息参见 [ts-expect-error](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-rc/#what-about-ts-ignore)
 
 
 
