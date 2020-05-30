@@ -6,8 +6,6 @@
 ## typeof
 typeof 在 JavaScript 中用于获取值的类型。你也可以在类型注释中使用来获取变量的类型。(严格来说 typeof 不是一种类型,只是一个操作符便于获取类型)
 
-<<< ./examples/typeof/basic.ts
-
 
 
 

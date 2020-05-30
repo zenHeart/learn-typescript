@@ -6,7 +6,6 @@ TypeScript 有许多不同的操作符,分散在官方文档各处。
 ## -
 用于取消 readonly 的只读属性。来源 [readonly mapped type modifiers and readonly arrays](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html#readonly-mapped-type-modifiers-and-readonly-arrays)
 
-<<< ./examples/operator/minus/basic.ts
 
 ## ...
 <!-- TODO: 补充泛型扩展讲解 -->
