@@ -1,10 +1,7 @@
 # jsx
 
 <!-- TODO: 补充讲解 -->
-## [defaultProps](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#support-for-def
-
-
-aultprops-in-jsx)
+## [defaultProps](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#support-for-defaultprops-in-jsx)
 
 <!-- TODO: 补充讲解 jsx 泛型类型参数-->
 ## [泛型类型参数](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#generic-type-arguments-in-jsx-elements)
