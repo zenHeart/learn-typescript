@@ -8,6 +8,7 @@ module.exports = {
     }
   },
   title: 'TypeScript 学习指南',
+  base:'/learn-typescript/',
   themeConfig: {
     sidebarDepth: 2,
     nav: [
