@@ -21,17 +21,17 @@ describe('es6', () => {
       });
     });
   });
-  describe('new.target', function() {
-    it('验证 new.target', function() {
-      function f() {
+  describe('new.target', function () {
+    it('验证 new.target', function () {
+      function f(this: any) {
         if (new.target) {
           this.a = 1;
         } else {
-          2;
+          return 2;
         }
       }
-      expect(new (f() as any)()).toEqual(1);
-      expect(f()).toBe(2);
+      expect(new (f as any)()).toEqual({ a: 1 });
+      expect(f()).toEqual(2);
     });
   });
 });
