@@ -1,5 +1,37 @@
 
 describe('decorator', () => {
+  describe('decorator arguments',function() {
+    it('class decorator arg 0 is class', function() {
+      function A1(target:any) {
+        expect(target).toEqual(C1)
+        expect([...arguments]).toEqual([C1])
+      }
+      @A1
+      class C1 {}
+    })
+    it('class method decorator arg  is  prototype key descrioptor', function() {
+      class C1 {
+        @M1
+        a() {
+
+        }
+      }
+      function M1(target:any,key:any,desc:any) {
+        expect(target).toEqual(C1.prototype)
+        expect(key).toEqual('a')
+        expect(desc).toEqual(Object.getOwnPropertyDescriptor(C1.prototype,'a'))
+      }
+    })
+    it('class property decorator arg  is prototype key value', function() {
+      class C1 {
+        @P1 a = 'demo';
+      }
+      function P1(target:any,key:any) {
+        expect(target).toEqual(C1.prototype)
+        expect(key).toEqual('a')
+      }
+    })
+  })
   describe('class decorator', function () {
     it('在目标类上扩充属性', function () {
       function testable(target: any) {

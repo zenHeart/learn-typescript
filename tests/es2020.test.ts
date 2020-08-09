@@ -5,7 +5,7 @@ describe('es2020', () => {
       expect(a?.f).toBe(1);
     });
     test('可选链为 null 则返回 undefined', () => {
-      let a = null;
+      let a:any = null;
       expect(a?.f).toBe(undefined);
     });
     test('可选链最后一个值为 null,原样返回', () => {
