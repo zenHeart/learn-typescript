@@ -1,37 +1,87 @@
 
 describe('decorator', () => {
-  describe('decorator arguments',function() {
-    it('class decorator arg 0 is class', function() {
-      function A1(target:any) {
-        expect(target).toEqual(C1)
-        expect([...arguments]).toEqual([C1])
-      }
-      @A1
-      class C1 {}
-    })
-    it('class method decorator arg  is  prototype key descrioptor', function() {
-      class C1 {
-        @M1
-        a() {
+  describe('decorator running time', function() {
+    it('class run declare on initial',function() {
+        const mockFn = jest.fn();
+        expect(mockFn.mock.calls.length).toBe(0);
+        @mockFn
+        class A {
 
         }
-      }
-      function M1(target:any,key:any,desc:any) {
-        expect(target).toEqual(C1.prototype)
-        expect(key).toEqual('a')
-        expect(desc).toEqual(Object.getOwnPropertyDescriptor(C1.prototype,'a'))
-      }
+        // 类装饰器在类初始化时执行
+        expect(mockFn.mock.calls.length).toBe(1);
+        expect(mockFn.mock.calls).toEqual([[A]]);
     })
-    it('class property decorator arg  is prototype key value', function() {
-      class C1 {
-        @P1 a = 'demo';
+    it('class method run declare on initial',function() {
+        const mockFn = jest.fn();
+        expect(mockFn.mock.calls.length).toBe(0);
+        
+        class A {
+          @mockFn
+          a() {}
+        }
+        // 类方法装饰器在类初始化时执行
+        expect(mockFn.mock.calls.length).toBe(1);
+        expect(mockFn.mock.calls).toEqual([[A.prototype,'a',Object.getOwnPropertyDescriptor(A.prototype,'a')]]);
+    })
+    it('class property run declare on initial',function() {
+        const mockFn = jest.fn();
+        expect(mockFn.mock.calls.length).toBe(0);
+        
+        class A {
+          @mockFn
+          a:String
+          constructor(a: string) {
+            this.a  = a;
+          }
+        }
+        // 类装饰器在类初始化时执行
+        expect(mockFn.mock.calls.length).toBe(1);
+        expect(mockFn.mock.calls).toEqual([[A.prototype,'a',Object.getOwnPropertyDescriptor(A.prototype,'a')]]);
+        let a = new A('tom');
+        // 实例化不触发装饰器
+        expect(mockFn.mock.calls.length).toBe(1);
+    })
+    it('class accessor property decorator',function() {
+      let mockFn = jest.fn();
+      expect(mockFn.mock.calls.length).toBe(0)
+      class A {
+        @mockFn
+        get a() {
+          return 1
+        }
       }
-      function P1(target:any,key:any) {
-        expect(target).toEqual(C1.prototype)
-        expect(key).toEqual('a')
-      }
+      expect(mockFn.mock.calls.length).toBe(1)
+      expect(mockFn.mock.calls).toEqual([[A.prototype,'a',Object.getOwnPropertyDescriptor(A.prototype,'a')]])
+    })
+    it('class static method run declare on initial',function() {
+        const mockFn = jest.fn();
+        expect(mockFn.mock.calls.length).toBe(0);
+        
+        class A {
+          @mockFn
+          static a() {}
+        }
+        // 类装饰器在类初始化时执行
+        expect(mockFn.mock.calls.length).toBe(1);
+        // 静态方法构造器相关属性
+        expect(mockFn.mock.calls).toEqual([[A,'a',Object.getOwnPropertyDescriptor(A,'a')]]);
+    })
+    it('class static method run declare on initial',function() {
+        const mockFn = jest.fn();
+        expect(mockFn.mock.calls.length).toBe(0);
+        
+        class A {
+          @mockFn
+          static a = 'tom'
+        }
+        // 类装饰器在类初始化时执行
+        expect(mockFn.mock.calls.length).toBe(1);
+        // 静态方法构造器相关属性
+        expect(mockFn.mock.calls).toEqual([[A,'a', undefined ]]);
     })
   })
+  
   describe('class decorator', function () {
     it('在目标类上扩充属性', function () {
       function testable(target: any) {
@@ -44,7 +94,7 @@ describe('decorator', () => {
       expect(A).toHaveProperty('testable');
 
     });
-    it('包含参数的装饰器,必须返回装饰器函数', function () {
+    it('decorator factory', function () {
       function testable(isTest: boolean) {
         return (target: any) => {
           target.testable = isTest
@@ -120,6 +170,32 @@ describe('decorator', () => {
       expect(runRes).toEqual(testData.runOrder)
     })
   });
+  describe('property decorator',function() {
+    it('upper property',function() {
+     function UpperCase(target: any, key:any)  {
+      let value : string;
+      const getter = function() {
+        return value;
+      };
+      const setter = function(newVal: string) {
+        value  = newVal.toUpperCase();
+      }; 
+      Object.defineProperty(target, key, {
+        get: getter,
+        set: setter
+      }); 
+     }
+     class A {
+       @UpperCase
+       name:String
+      constructor(name: string) {
+        this.name = name;
+      }
+     }
+     let a = new A('jack')
+     expect(a.name).toEqual('JACK')
+    })
+  })
   describe('decorator use case', function () {
     it('change method descriptor', function () {
       function readonly(target: any, key: string, descriptor: PropertyDescriptor) {
