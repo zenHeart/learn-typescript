@@ -1,6 +1,16 @@
 
 describe('decorator', () => {
   describe('decorator running time', function() {
+    it('class decorator run context',function() {
+      function mockFn(a: any) {
+        // @ts-ignore
+        expect(this).toBe(undefined)
+      }
+      @mockFn
+      class A {
+      }
+    })
+
     it('class run declare on initial',function() {
         const mockFn = jest.fn();
         expect(mockFn.mock.calls.length).toBe(0);
@@ -197,7 +207,47 @@ describe('decorator', () => {
     })
   })
   describe('decorator use case', function () {
-    it('change method descriptor', function () {
+    it('extend class static method',function () {
+      let mockFn  = jest.fn();
+      function log(target : any) {
+          target.log = mockFn
+      }
+      @log
+      class A1 {};
+      //@ts-ignore
+      expect(A1.log).toEqual(mockFn)
+    })
+    it('mark class  method',function () {
+      let mockFn  = jest.fn();
+      let a:any;
+      function Deprecated(target:any,method:any,desp: any) {
+        let val = desp.value;
+        
+        // @ts-ignore
+        let newVal = function(...args) {
+          // @ts-ignore
+          mockFn('deprecated',this)
+          console.log('deprecated')
+          // @ts-ignore
+          val.call(this,...args)
+        }
+        desp.value= newVal
+        Object.defineProperty(target,method,desp)
+      }
+      class A1 {
+        @Deprecated
+        a() {
+          // @ts-ignore
+          expect(this).toEqual(a)
+        }
+      };
+      a = new A1();
+      expect(mockFn.mock.calls.length).toBe(0)
+      a.a();
+      expect(mockFn.mock.calls.length).toBe(1)
+      expect(mockFn.mock.calls).toEqual([['deprecated',a]])
+    })
+    it('change class method readonly', function () {
       function readonly(target: any, key: string, descriptor: PropertyDescriptor) {
         descriptor.writable = false;
       }
