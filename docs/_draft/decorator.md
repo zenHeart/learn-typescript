@@ -13,11 +13,40 @@
 }
 ```
 
-## 什么是装饰器
+## 装饰器概述
+装饰器是处于 [草案阶段 stage2](https://github.com/wycats/javascript-decorators) 的 ECMAScript 语法，Typescript 基于此草案实现了改特性。
+
+装饰器语法实现了对类的动态扩充，避免了直接对类的修改。是实现 [面向切面编程 AOP](https://en.wikipedia.org/wiki/Aspect-oriented_programming) 的一种手段。
+
+TypeScript 提供了一系列装饰器语法来实现对类的动态修改，**TypeScript 和 js 草案在装饰器实现上有差异** 罗列如下：
+
+装饰器| 功能| ts| js 草案
+:---|:---|:---|:---|
+类装饰器|扩充类| ✅| ✅
+类方法装饰器|修改类的方法| ✅| ✅
+类静态方法装饰器|修改类的静态方法| ✅| ✅
+类属性装饰器|修改类的属性| ✅| ✅
+类静态属性装饰器|修改类的静态属性| ✅| ✅
+类访问器属性装饰器|修改类的访问器属性| ✅| ✅
+类参数装饰器|修改类方法的参数| ✅| ⬜
+装饰器工厂|动态设置装饰器| ✅| ✅
+装饰器组合|混合多个装饰器| ✅| ✅
+
+
+为什么没有函数的装饰器，详细讨论参见 [decorators for functions](https://github.com/NoBey/nobey/issues/44), 目前原因为函数提升导致了函数装饰器的不易实现，github 存在如下的 [function-decorators-proposal](https://github.com/finom/function-decorators-proposal) 解决此问题
+
+
+<!-- TODO： 完成各类型装饰器的示例 -->
+https://www.typescriptlang.org/docs/handbook/decorators.html
+
 
 
 
 ## 语法详解
+### 类装饰器
+
+
+
 ### 装饰器表达式
 
 ### 装饰器工厂

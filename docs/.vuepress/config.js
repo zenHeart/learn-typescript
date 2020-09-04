@@ -46,6 +46,7 @@ module.exports = {
           title: '草稿',
           collapsable: false,
           children: [
+            '_draft/decorator',
             '_draft/advance-types',
             '_draft/javascript-check',
             '_draft/jsx',
