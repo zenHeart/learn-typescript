@@ -31,7 +31,8 @@
   
 
 ## 类
-综合属性和函数接口
+在 OOP 编程中，利用接口来定义，公共的方法和属性。
+
 
 
 ## 接口扩展
@@ -40,3 +41,6 @@
 注意 具名函数接口为对象属性
 
 接口典型作用：https://devblogs.microsoft.com/typescript/walkthrough-interfaces/
+
+## 总结
+1. 类中 interface 只能定义共有方法和属性

@@ -46,17 +46,23 @@ module.exports = {
           title: '草稿',
           collapsable: false,
           children: [
-            '_draft/decorator',
             '_draft/advance-types',
+            '_draft/decorator',
+            '_draft/ffp',
+            '_draft/index-type',
+            '_draft/interface',
             '_draft/javascript-check',
             '_draft/jsx',
             '_draft/new-feature',
             '_draft/operator',
+            '_draft/tsconfig',
+            '_draft/type-assertion',
             '_draft/type-guards',
             '_draft/type-inference',
-            '_draft/type-utils',
+            '_draft/type-scope',
+            '_draft/types-operation',
             '_draft/typescript-test',
-            '_draft/understanding-type-system'
+            '_draft/understanding-type-system',
           ]
         }
       ]

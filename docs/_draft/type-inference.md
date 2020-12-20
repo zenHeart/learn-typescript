@@ -1,5 +1,8 @@
 # 类型推导
 
+搞清楚类型推导机制
+类型兼容: https://www.typescriptlang.org/docs/handbook/type-compatibility.html
+
 ## 控制流错误分析
 TypeScript 也支持对控制流程的逻辑判断。
 
