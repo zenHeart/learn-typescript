@@ -1,0 +1,1 @@
+greetGlobal("hello, world");

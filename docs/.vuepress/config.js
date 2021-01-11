@@ -38,7 +38,8 @@ module.exports = {
             'tutorial/5.generics',
             'tutorial/6.module',
             'tutorial/7.namespace',
-            'tutorial/8.declare',
+            'tutorial/8.1.declare',
+            'tutorial/8.2.declare-ambients',
             'tutorial/9.config'
           ]
         },

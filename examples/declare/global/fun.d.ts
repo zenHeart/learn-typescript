@@ -1,0 +1,1 @@
+declare function greetGlobal(greeting: string): void;
