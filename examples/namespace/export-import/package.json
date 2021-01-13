@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "build:ref": "tsc --outFile app.js app-ref.ts",
+    "build": "tsc --outFile app.js StringValidator.ts LettersOnlyValidator.ts ZipCodeValidator.ts app.ts"
+  }
+}

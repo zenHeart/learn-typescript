@@ -1,6 +1,0 @@
-{
-  "scripts": {
-    "build": "tsc --outFile app.js test.ts",
-    "build1": "tsc --outFile app.js Validation.ts LettersOnlyValidator.ts ZipCodeValidator.ts Test.ts"
-  }
-}

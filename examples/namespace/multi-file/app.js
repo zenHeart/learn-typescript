@@ -24,7 +24,7 @@ var Validation;
     }());
     Validation.ZipCodeValidator1 = ZipCodeValidator1;
 })(Validation || (Validation = {}));
-/// <reference path="Validation.ts" />
+/// <reference path="StringValidator.ts" />
 /// <reference path="LettersOnlyValidator.ts" />
 /// <reference path="ZipCodeValidator.ts" />
 var strings1 = ['Hello', '98052', '101'];
