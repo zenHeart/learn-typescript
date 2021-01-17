@@ -30,31 +30,6 @@ typeof 在 JavaScript 中用于获取值的类型。你也可以在类型注释�
 
 阅读 [Specifying the type of this for functions](https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#specifying-the-type-of-this-for-functions) 进一步理解。
 
-## 索引类型 (index type)
-在之前 [索引类型](./tutorial/3.2.builtin-literal-object.md#索引类型) 已做过简单介绍,此处详细讨论其特性。
-
-### 索引签名 (index signatures)
-
-形如 `[标识符:类型]: 类型` 的形式称为索引签名,
-它限制了对象属性可取的类型。注意标识符的类型只支持字符串和数值格式。
-
-<<< ./examples/types/index-types/basic.ts{27,30}
-
-注意高亮行,由于数字索引实际上也是字符串,所以限制标识符为字符串类型也可创建数组。
-
-:::tip
-这也符合 JavaScript 的特性, `a = [1,2]`,采用 a['1'],a[1.00] 均可访问到元素 a[1]
-:::
-
-采用索引签名申明类型会限制,其他属性也必须属于索引签名的类型。
-
-<<< ./examples/types/index-types/index-constraint.ts
-
-根据 [TypeScript 规范 3.9.4](https://github.com/microsoft/TypeScript/blob/master/doc/spec.md#394-index-signatures) 索引特征在创建类型时只能出现一次
-
-<<< ./examples/types/index-types/single.ts
-
-
 ## 查找类型(lookup type)
 在 JavaScript 中我们常会采用 `Object.keys` 来提取对象的键名。为了实现动态提取键名和对应类型,TypeScript 创建查找类型解决此问题。查找类型的核心内容包括。
 

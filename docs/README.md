@@ -1,6 +1,3 @@
----
----
-
 # TypeScript 概述
 
 该指南针对熟悉 JavaScript 的开发者。这里不假设你有强类型语言开发经验，例如 `C、C++、JAVA` 诸如此类。但是你必须熟悉 `ES6` 语法，包括 `Symbol` 类型、`let,const` 申明、解构、剩余参数、箭头函数、ESM 模块系统、类语法等， 若不熟悉上述知识推荐 JavaScript 高级程序作者 Nicholas C .Zakas [深入理解 ES6](http://www.dfhuo.com/es6.pdf)
