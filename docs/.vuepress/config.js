@@ -54,6 +54,7 @@ module.exports = {
             'dig-type/type-program',
             'dig-type/1.1.index-type',
             'dig-type/1.2.mapped-type',
+            'dig-type/1.3.template-literal-type',
             'dig-type/2.conditional-type',
             'dig-type/3.this',
             'dig-type/4.utils-type',
