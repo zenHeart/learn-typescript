@@ -51,7 +51,12 @@ module.exports = {
           collapsable: false,
           children: [
             'dig-type/',
-            'dig-type/1.index-type',
+            'dig-type/type-program',
+            'dig-type/1.1.index-type',
+            'dig-type/1.2.mapped-type',
+            'dig-type/2.conditional-type',
+            'dig-type/3.this',
+            'dig-type/4.utils-type',
             'dig-type/advance-types',
             'dig-type/interface',
             'dig-type/type-assertion',
