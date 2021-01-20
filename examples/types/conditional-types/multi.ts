@@ -1,4 +1,4 @@
-// 条件判断会逐层向后进行。
+// 效果类似 js 嵌套多个条件表达式
 type TypeName<T> = T extends string
   ? 'string'
   : T extends number

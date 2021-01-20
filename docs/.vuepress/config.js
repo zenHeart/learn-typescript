@@ -51,7 +51,6 @@ module.exports = {
           collapsable: false,
           children: [
             'dig-type/',
-            'dig-type/type-program',
             'dig-type/1.1.index-type',
             'dig-type/1.2.mapped-type',
             'dig-type/1.3.template-literal-type',
@@ -65,6 +64,7 @@ module.exports = {
             'dig-type/type-inference',
             'dig-type/type-scope',
             'dig-type/types-operation',
+            'dig-type/type-program',
           ]
         },
         {
