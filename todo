@@ -31,9 +31,14 @@ backlog:
         ☐ jsx https://www.typescriptlang.org/docs/handbook/jsx.html
     没看懂:
         ☐ 结构化标识类 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#improved-handling-of-structurally-identical-classes-and-instanceof-expressions
-
+        ☐ 枚举类型申明文件导出问题
 
 patter: 
     ☐ 补充多继承的典型策略和有缺点比较
         ☐ 方法混入 https://stackoverflow.com/questions/23876782/how-do-i-split-a-typescript-class-into-multiple-files
         ☐ angular 策略 https://github.com/angular/components/blob/3c37e4b1c1cb74a3d0a90d173240fc730d21d9d4/src/material/core/common-behaviors/error-state.ts#L38
+        ☐ react https://mp.weixin.qq.com/s?__biz=Mzg2ODQ1OTExOA==&mid=2247489266&idx=1&sn=82a9de79a6712e3101ebd6c6c6d1d8c5&utm_source=tuicool&utm_medium=referral
+        ☐ 多层嵌套函数 https://mp.weixin.qq.com/s/P-NsmO46HKnRxroLea0Q_A
+        
+module: 
+  

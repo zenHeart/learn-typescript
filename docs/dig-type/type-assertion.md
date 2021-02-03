@@ -2,7 +2,7 @@
 
 该处收录 TypeScript 中的断言类型,方便查阅。
 
-## 常量断言(const assertions)
+## 常量断言
 常量断言会阻止对变量的修改。
 
 <<< ./examples/concept/type-assertions/const-assertion.ts

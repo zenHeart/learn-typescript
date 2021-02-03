@@ -1,6 +1,7 @@
 abstract class AbstractAnimal {
   // 抽象方法,继承的类必须实现
   abstract makeSound(): void;
+  
   // 抽象属性,继承的类必须实现
   abstract type: string;
   move(): void {
