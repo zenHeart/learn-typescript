@@ -31,7 +31,7 @@ backlog:
         ☐ jsx https://www.typescriptlang.org/docs/handbook/jsx.html
     没看懂:
         ☐ 结构化标识类 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#improved-handling-of-structurally-identical-classes-and-instanceof-expressions
-
+        ☐ 枚举类型申明文件导出问题
 
 patter: 
     ☐ 补充多继承的典型策略和有缺点比较
