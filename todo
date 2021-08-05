@@ -18,7 +18,7 @@ todos:
     ✔ 补充抽象构造器和访问属性语法  https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#private-and-protected-constructors @done(20-03-13 11:04)
     ✔ Augmenting global/module scope from modules https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#augmenting-globalmodule-scope-from-modules @done(20-03-13 11:06)
     ✔ 控制流错误分析 https://www.typescriptlang.org/v2/docs/handbook/release-notes/overview.html#control-flow-analysis-errors @done(20-03-13 11:25)
-
+    ☐ 模板字符串 https://www.tuicool.com/articles/VrUZje7
 backlog:
     ☐  typescript 解析器使用 http://www.alloyteam.com/2020/08/%E5%88%9D%E6%8E%A2-typescript-%E8%A7%A3%E6%9E%90%E5%99%A8/
     阅读:
