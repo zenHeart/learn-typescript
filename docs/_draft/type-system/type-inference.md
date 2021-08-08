@@ -9,6 +9,25 @@ TypeScript 也支持对控制流程的逻辑判断。
 **不可访问的代码**
 
 
+## 字面量类型推导
+参考 [Better inference for literal types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#better-inference-for-literal-types)
+
+<<< ./examples/concept/type-inference/literal.ts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 知识点
 1.
 ## 参考资料

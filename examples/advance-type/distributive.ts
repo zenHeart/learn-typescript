@@ -11,8 +11,8 @@ type TypeName<T> = T extends string
   : 'object';
 
 // "string" | "function"
-type T10 = TypeName<string | (() => void)>;
+type TD0 = TypeName<string | (() => void)>;
 // "string" | "object" | "undefined"
-type T12 = TypeName<string | string[] | undefined>;
+type TD1 = TypeName<string | string[] | undefined>;
 // "object"
-type T11 = TypeName<string[] | number[]>;
+type TD2 = TypeName<string[] | number[]>;
