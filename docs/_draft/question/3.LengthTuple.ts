@@ -22,10 +22,8 @@
 
 
 /* _____________ Your Code Here _____________ */
-type t =  [ 'b' , 'c' , 'a' ]
-type a = {
-[ k in t[number]]: t[k]
-}  
+
+type Length<T extends readonly any[]> = T extends [] ? 0 : T['length']
 
 
 /* _____________ Test Cases _____________ */
