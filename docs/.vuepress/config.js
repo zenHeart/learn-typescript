@@ -27,8 +27,7 @@ module.exports = {
             'tutorial/2.1.primitive-types',
             'tutorial/2.2.special-primitive-types',
             'tutorial/2.3.literal-types',
-            'tutorial/2.4.template-literal-type',
-            'tutorial/2.5.enum',
+            'tutorial/2.4.enum',
             'tutorial/3.1.object-types',
             'tutorial/3.2.builtin-literal-object',
             'tutorial/3.3.array',
@@ -57,6 +56,8 @@ module.exports = {
             'type-program/',
             'type-program/1.1.index-type',
             'type-program/1.2.mapped-type',
+            'type-program/1.3.template-literal-type',
+            'type-program/1.4.type-operator',
             'type-program/2.conditional-type',
             'type-program/3.utils-type',  
           ]
