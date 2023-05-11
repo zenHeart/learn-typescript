@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "class.js",
   "scripts": {
-    "start": "vuepress dev  docs",
-    "build": "vuepress build docs",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider vuepress dev  docs",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider vuepress build docs",
     "deploy": "./scripts/deploy.sh",
     "test": "jest --watch"
   },
