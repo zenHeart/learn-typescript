@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeScript 模块声明扩展与覆盖</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; padding: 2rem; }
+    h1 { font-size: 1.8rem; color: #fff; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.2rem; color: #00d4ff; margin: 1.5rem 0 0.8rem; }
+    h3 { font-size: 1rem; color: #ffd700; margin: 1rem 0 0.5rem; }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tab-btn { background: #1a1a1a; border: 1px solid #333; color: #888; padding: 8px 16px; cursor: pointer; border-radius: 4px; font-size: 0.85rem; transition: all 0.2s; }
+    .tab-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+    .tab-btn.active { background: #00d4ff; color: #0a0a0a; font-weight: bold; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 1rem 0; }
+    .mini-card { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; }
+    .mini-card h4 { font-size: 0.85rem; color: #00d4ff; margin-bottom: 6px; }
+    .mini-card p { font-size: 0.8rem; color: #aaa; line-height: 1.5; }
+
+    .highlight { color: #00d4ff; font-weight: bold; }
+    .warning { color: #ff6b6b; }
+    .success { color: #4ade80; }
+
+    pre { background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; overflow-x: auto; font-size: 0.8rem; line-height: 1.6; margin: 0.8rem 0; }
+    code { font-family: 'Fira Code', 'Cascadia Code', monospace; }
+    .comment { color: #666; }
+    .keyword { color: #ff79c6; }
+    .string { color: #f1fa8c; }
+    .type { color: #8be9fd; }
+    .fn { color: #50fa7b; }
+
+    table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.85rem; }
+    th { background: #111; color: #00d4ff; padding: 8px 12px; text-align: left; border: 1px solid #2a2a2a; }
+    td { padding: 8px 12px; border: 1px solid #2a2a2a; color: #ccc; }
+
+    .input-group { display: flex; gap: 8px; margin: 1rem 0; flex-wrap: wrap; }
+    .input-group input, .input-group select { background: #111; border: 1px solid #333; color: #e0e0e0; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; flex: 1; min-width: 200px; }
+    .input-group input:focus, .input-group select:focus { outline: none; border-color: #00d4ff; }
+    .btn { background: #00d4ff; color: #0a0a0a; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+    .btn:hover { opacity: 0.9; }
+    .btn.danger { background: #ff6b6b; color: white; }
+    .btn.success { background: #4ade80; color: #0a0a0a; }
+    .btn.secondary { background: #333; color: #e0e0e0; }
+
+    .result-panel { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 1rem; margin: 1rem 0; font-family: monospace; font-size: 0.85rem; }
+    .result-panel .ok { color: #4ade80; }
+    .result-panel .fail { color: #ff6b6b; }
+    .result-panel .info { color: #ffd700; }
+
+    .code-editor { width: 100%; min-height: 200px; background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; color: #e0e0e0; font-family: 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.6; resize: vertical; }
+    .code-editor:focus { outline: none; border-color: #00d4ff; }
+
+    .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1rem 0; }
+    @media (max-width: 600px) { .comparison { grid-template-columns: 1fr; } }
+    .comparison-panel { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 1rem; }
+    .comparison-panel h4 { font-size: 0.9rem; margin-bottom: 8px; }
+    .comparison-panel.good h4 { color: #4ade80; }
+    .comparison-panel.bad h4 { color: #ff6b6b; }
+
+    .flow-step { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+    .flow-step .num { background: #00d4ff; color: #0a0a0a; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; flex-shrink: 0; }
+    .flow-arrow { color: #00d4ff; font-size: 1.2rem; margin-left: 11px; }
+
+    .quiz-option { background: #111; border: 1px solid #333; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s; margin: 4px 0; }
+    .quiz-option:hover { border-color: #00d4ff; }
+    .quiz-option.selected { border-color: #00d4ff; background: #00d4ff20; }
+    .quiz-option.correct { border-color: #4ade80; background: #4ade8020; }
+    .quiz-option.wrong { border-color: #ff6b6b; background: #ff6b6b20; }
+    .quiz-question { background: #1a1a1a; border-left: 3px solid #00d4ff; padding: 1rem; margin: 1rem 0; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 8px; }
+    .badge-ts { background: #3178c6; color: white; }
+    .badge-d-ts { background: #917idak; color: white; }
+  </style>
+</head>
+<body>
+
+<h1>TypeScript 模块声明扩展与覆盖</h1>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="overview">📚 概念总览</button>
+  <button class="tab-btn" data-tab="interface">🔗 接口合并</button>
+  <button class="tab-btn" data-tab="global">🌍 全局声明</button>
+  <button class="tab-btn" data-tab="satisfies">✨ satisfies</button>
+  <button class="tab-btn" data-tab="comparison">⚖️ 方案对比</button>
+  <button class="tab-btn" data-tab="quiz">📝 自测题</button>
+</div>
+
+<!-- 概念总览 -->
+<div id="tab-overview" class="tab-content active">
+  <div class="card">
+    <h2>核心问题</h2>
+    <p style="color: #aaa; line-height: 1.6; margin: 1rem 0;">
+      如何扩展或覆盖第三方模块的类型定义，而不修改原库？例如：给 Express 的 Request 对象添加自定义属性。
+    </p>
+    <div class="flow-chart">
+      <div class="flow-step"><span class="num">1</span><span class="text">原始库类型不完整或不满足需求</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="num">2</span><span class="text">使用 declare module 扩展类型</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="num">3</span><span class="text">或使用 interface extends 创建新类型</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="num">4</span><span class="text">TS 4.9+ 可用 satisfies 保持推断同时验证</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>五种扩展方法速查</h2>
+    <table>
+      <tr><th>方法</th><th>是否修改原类型</th><th>适用场景</th></tr>
+      <tr><td><span class="highlight">declare module</span></td><td class="ok">否</td><td>扩展 npm 包类型</td></tr>
+      <tr><td><span class="highlight">interface extends</span></td><td class="ok">否</td><td>创建扩展类型</td></tr>
+      <tr><td><span class="highlight">declare global</span></td><td class="ok">否</td><td>全局命名空间扩展</td></tr>
+      <tr><td><span class="highlight">satisfies</span></td><td class="ok">否</td><td>类型验证 + 保持推断</td></tr>
+      <tr><td><span class="highlight">module 覆盖</span></td><td class="warning">完全覆盖</td><td>替换原类型</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>实战场景</h2>
+    <div class="card-grid">
+      <div class="mini-card">
+        <h4>🔌 Express Request</h4>
+        <p>添加 userId、authToken 等自定义属性到 Express 请求对象</p>
+      </div>
+      <div class="mini-card">
+        <h4>📡 Axios 配置</h4>
+        <p>扩展 AxiosRequestConfig 添加 _retryCount 等内部字段</p>
+      </div>
+      <div class="mini-card">
+        <h4>⚛️ React Props</h4>
+        <p>给所有 DOM 元素添加 data-testid 等测试属性</p>
+      </div>
+      <div class="mini-card">
+        <h4>🔷 Vue 组件</h4>
+        <p>在 ComponentCustomProperties 添加全局属性</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>关键原则</h2>
+    <pre><code><span class="keyword">1.</span> <span class="type">interface</span> 可以合并，<span class="type">type alias</span> 不能合并
+<span class="keyword">2.</span> 子元素的 z-index 再高，也不能超出父层叠上下文的边界
+<span class="keyword">3.</span> <span class="fn">satisfies</span> 保持类型推断 + 类型检查，两者兼得
+<span class="keyword">4.</span> 尽量扩展而非覆盖，保持对原库的兼容性</code></pre>
+  </div>
+</div>
+
+<!-- 接口合并 -->
+<div id="tab-interface" class="tab-content">
+  <div class="card">
+    <h2>declare module 扩展接口</h2>
+    <pre><code><span class="comment">// types/express-custom.d.ts</span>
+<span class="keyword">import</span> <span class="string">'express'</span>;
+
+<span class="keyword">declare module</span> <span class="string">'express'</span> {
+  <span class="keyword">interface</span> <span class="type">Request</span> {
+    userId?: <span class="type">string</span>;
+    authToken?: <span class="type">string</span>;
+    isAdmin?: <span class="type">boolean</span>;
+  }
+}
+
+<span class="comment">// 使用时</span>
+app.get(<span class="string">'/profile'</span>, (req, res) => {
+  console.log(req.userId);  <span class="comment">// ✅ 类型安全</span>
+});</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>多次声明自动合并</h2>
+    <pre><code><span class="comment">// 第一次声明</span>
+<span class="keyword">declare module</span> <span class="string">'my-library'</span> {
+  <span class="keyword">interface</span> <span class="type">Config</span> {
+    timeout: <span class="type">number</span>;
+  }
+}
+
+<span class="comment">// 第二次声明（会自动合并）</span>
+<span class="keyword">declare module</span> <span class="string">'my-library'</span> {
+  <span class="keyword">interface</span> <span class="type">Config</span> {
+    retry?: <span class="type">number</span>;      <span class="comment">// 新增字段</span>
+    onSuccess?: () =&gt; <span class="type">void</span>; <span class="comment">// 新增字段</span>
+  }
+}
+
+<span class="comment">// 合并后 Config = { timeout: number; retry?: number; onSuccess?: () => void }</span></code></pre>
+  </div>
+
+  <div class="card">
+    <h2>interface extends 扩展</h2>
+    <pre><code><span class="keyword">import</span> { OriginalType } <span class="keyword">from</span> <span class="string">'some-library'</span>;
+
+<span class="comment">// 创建新类型，不修改原类型</span>
+<span class="keyword">interface</span> <span class="type">ExtendedType</span> <span class="keyword">extends</span> OriginalType {
+  additionalProp?: <span class="type">boolean</span>;
+  nestedConfig?: {
+    enabled: <span class="type">boolean</span>;
+    timeout: <span class="type">number</span>;
+  };
+}
+
+<span class="comment">// 使用新类型，原始类型不受影响</span>
+<span class="keyword">const</span> config: ExtendedType = {
+  prop: <span class="string">'original'</span>,
+  additionalProp: <span class="keyword">true</span>,
+};</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>函数重载合并</h2>
+    <pre><code><span class="keyword">declare module</span> <span class="string">'calculator'</span> {
+  <span class="keyword">function</span> <span class="fn">calculate</span>(a: <span class="type">number</span>, b: <span class="type">number</span>): <span class="type">number</span>;
+}
+
+<span class="comment">// 扩展重载签名</span>
+<span class="keyword">declare module</span> <span class="string">'calculator'</span> {
+  <span class="keyword">function</span> <span class="fn">calculate</span>(
+    a: <span class="type">number</span>,
+    b: <span class="type">number</span>,
+    options?: { precision?: <span class="type">number</span> }
+  ): <span class="type">number</span>;
+}</code></pre>
+  </div>
+</div>
+
+<!-- 全局声明 -->
+<div id="tab-global" class="tab-content">
+  <div class="card">
+    <h2>declare global</h2>
+    <pre><code><span class="comment">// global.d.ts</span>
+<span class="keyword">declare global</span> {
+  <span class="keyword">namespace</span> MyLibrary {
+    <span class="keyword">interface</span> <span class="type">ExtendedConfig</span> {
+      timeout?: <span class="type">number</span>;
+      retries?: <span class="type">number</span>;
+    }
+  }
+}
+
+<span class="keyword">export</span> {};  <span class="comment">// 使其成为模块文件</span></code></pre>
+    <p class="info" style="margin-top: 8px;">⚠️ 必须有 `export {}` 使文件成为模块，才能使用 `declare global`</p>
+  </div>
+
+  <div class="card">
+    <h2>Vue 组件全局属性</h2>
+    <pre><code><span class="comment">// types/vue-custom.d.ts</span>
+<span class="keyword">import</span> { ComponentCustomProperties } <span class="keyword">from</span> <span class="string">'vue'</span>;
+
+<span class="keyword">declare module</span> <span class="string">'@vue/runtime-core'</span> {
+  <span class="keyword">interface</span> <span class="type">ComponentCustomProperties</span> {
+    $myPlugin: {
+      getVersion: () =&gt; <span class="type">string</span>;
+      config: Record&lt;<span class="type">string</span>, <span class="type">unknown</span>&gt;;
+    };
+  }
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>React DOM 属性扩展</h2>
+    <pre><code><span class="comment">// types/react-custom.d.ts</span>
+<span class="keyword">import</span> <span class="string">'react'</span>;
+
+<span class="keyword">declare module</span> <span class="string">'react'</span> {
+  <span class="keyword">interface</span> <span class="type">DOMAttributes</span>&lt;T&gt; {
+    <span class="comment">// data-* 属性（React 自带，但显式声明更明确）</span>
+    <span class="string">'data-testid'</span>?: <span class="type">string</span>;
+    <span class="string">'data-cy'</span>?: <span class="type">string</span>;
+    
+    <span class="comment">// 自定义事件</span>
+    onDoubleClick?: React.MouseEventHandler&lt;T&gt;;
+  }
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>deep extends — 嵌套对象</h2>
+    <pre><code><span class="comment">// 原始类型</span>
+<span class="keyword">interface</span> <span class="type">OriginalConfig</span> {
+  database: {
+    host: <span class="type">string</span>;
+    port: <span class="type">number</span>;
+  };
+}
+
+<span class="comment">// 扩展嵌套对象</span>
+<span class="keyword">type</span> <span class="type">ExtendedConfig</span> = <span class="type">OriginalConfig</span> & {
+  database: <span class="type">OriginalConfig</span>[<span class="string">'database'</span>] & {
+    ssl?: <span class="type">boolean</span>;
+    connectionLimit?: <span class="type">number</span>;
+  };
+};</code></pre>
+  </div>
+</div>
+
+<!-- satisfies -->
+<div id="tab-satisfies" class="tab-content">
+  <div class="card">
+    <h2>satisfies 操作符（TS 4.9+）</h2>
+    <p style="color: #aaa; margin-bottom: 1rem;">
+      <code>satisfies</code> 在保持类型推断的同时验证类型是否符合预期。
+    </p>
+    <pre><code><span class="keyword">import</span> type { Config } <span class="keyword">from</span> <span class="string">'some-library'</span>;
+
+<span class="comment">// 使用 satisfies：保持推断 + 类型检查</span>
+<span class="keyword">const</span> myConfig = {
+  prop: <span class="string">'value'</span>,
+  newProp: <span class="type">123</span>
+} <span class="keyword">satisfies</span> Config & { newProp: <span class="type">number</span> };
+
+<span class="comment">// myConfig.prop 仍然是 string 类型</span>
+<span class="comment">// myConfig.newProp 被验证为 number</span>
+console.log(myConfig.prop.<span class="highlight">toUpperCase</span>());  <span class="comment">// ✅ 'VALUE'</span>
+console.log(myConfig.newProp.<span class="highlight">toFixed</span>());    <span class="comment">// ✅ '123'</span></code></pre>
+  </div>
+
+  <div class="card">
+    <h2>as vs satisfies 对比</h2>
+    <div class="comparison">
+      <div class="comparison-panel bad">
+        <h4>❌ as 类型断言</h4>
+        <pre><code><span class="keyword">const</span> myConfig = {
+  prop: <span class="string">'value'</span>,
+  newProp: <span class="type">123</span>
+} <span class="keyword">as</span> Config;
+
+<span class="comment">// myConfig.prop 变成 Config['prop']</span>
+<span class="comment">// 可能丢失 string 字面量推断</span>
+console.log(myConfig.prop.<span class="highlight">toUpperCase</span>());
+<span class="comment">// ❌ Error: toUpperCase 不存在</span></code></pre>
+      </div>
+      <div class="comparison-panel good">
+        <h4>✅ satisfies 验证</h4>
+        <pre><code><span class="keyword">const</span> myConfig = {
+  prop: <span class="string">'value'</span>,
+  newProp: <span class="type">123</span>
+} <span class="keyword">satisfies</span> Config;
+
+<span class="comment">// myConfig.prop 保持 string 类型</span>
+console.log(myConfig.prop.<span class="highlight">toUpperCase</span>());
+<span class="comment">// ✅ 'VALUE' — 推断保留</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2> satisfies 适用场景</h2>
+    <table>
+      <tr><th>场景</th><th>推荐</th><th>原因</th></tr>
+      <tr><td>配置对象验证</td><td class="ok">satisfies</td><td>保持字面量推断</td></tr>
+      <tr><td>类型覆盖/替换</td><td class="ok">as</td><td>明确要替换类型</td></tr>
+      <tr><td>部分扩展第三方库</td><td class="ok">declare module</td><td>不改变原类型</td></tr>
+      <tr><td>创建新类型</td><td class="ok">extends</td><td>组合多个类型</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 方案对比 -->
+<div id="tab-comparison" class="tab-content">
+  <div class="card">
+    <h2>五种方案对比</h2>
+    <table>
+      <tr><th>方案</th><th>修改原类型</th><th>运行时影响</th><th>推荐场景</th></tr>
+      <tr><td>declare module + interface</td><td class="ok">否</td><td class="ok">无</td><td>扩展 npm 包类型</td></tr>
+      <tr><td>interface extends</td><td class="ok">否</td><td class="ok">无</td><td>需要新类型</td></tr>
+      <tr><td>declare global</td><td class="ok">否</td><td class="ok">无</td><td>全局命名空间</td></tr>
+      <tr><td>module 覆盖</td><td class="warning">完全替换</td><td class="warning">可能有</td><td>原类型完全错误</td></tr>
+      <tr><td>satisfies</td><td class="ok">否</td><td class="ok">无</td><td>配置验证</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>决策流程</h2>
+    <div class="flow-chart">
+      <div class="flow-step"><span class="num">1</span><span class="text">你需要扩展第三方库的类型吗？</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">2</span><span class="text">只需要创建新类型？</span></div>
+      <div class="flow-step"><span class="text" style="color: #4ade80; margin-left: 36px;">→ 用 interface extends</span></div>
+      <div class="flow-arrow" style="margin-left: 36px;">↓</div>
+      <div class="flow-step"><span class="num">3</span><span class="text">需要全局声明？</span></div>
+      <div class="flow-step"><span class="text" style="color: #4ade80; margin-left: 36px;">→ 用 declare global</span></div>
+      <div class="flow-arrow" style="margin-left: 36px;">↓</div>
+      <div class="flow-step"><span class="num">4</span><span class="text">配置对象需要验证？</span></div>
+      <div class="flow-step"><span class="text" style="color: #4ade80; margin-left: 36px;">→ 用 satisfies</span></div>
+      <div class="flow-arrow" style="margin-left: 36px;">↓</div>
+      <div class="flow-step"><span class="num">5</span><span class="text">需要扩展 npm 包？</span></div>
+      <div class="flow-step"><span class="text" style="color: #4ade80; margin-left: 36px;">→ 用 declare module + interface</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>常见错误</h2>
+    <div class="quiz-question">
+      <p><strong>错误 1：</strong>type alias 无法合并</p>
+      <pre><code><span class="comment">❌ 错误：type 不能合并</span>
+<span class="keyword">type</span> Config = { x: <span class="type">number</span> };
+<span class="keyword">type</span> Config = { y: <span class="type">string</span> }; <span class="comment">// Error: Duplicate identifier</span>
+
+<span class="comment">✅ 正确：用 interface</span>
+<span class="keyword">interface</span> Config { x: <span class="type">number</span>; }
+<span class="keyword">interface</span> Config { y: <span class="type">string</span>; } <span class="comment">// 自动合并</span></code></pre>
+    </div>
+    <div class="quiz-question">
+      <p><strong>错误 2：</strong>declare global 没有 export</p>
+      <pre><code><span class="comment">❌ 错误：没有使文件成为模块</span>
+<span class="keyword">declare global</span> {
+  <span class="keyword">namespace</span> Config {}
+}
+
+<span class="comment">✅ 正确：添加空的 export</span>
+<span class="keyword">declare global</span> {
+  <span class="keyword">namespace</span> Config {}
+}
+<span class="keyword">export</span> {};</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- 自测题 -->
+<div id="tab-quiz" class="tab-content">
+  <div class="card">
+    <h2>判断题</h2>
+    <div class="quiz-question">
+      <p><strong>1.</strong> interface 和 type alias 都可以合并？</p>
+      <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">✓ 正确</div>
+      <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">✗ 错误</div>
+      <p class="info" style="margin-top: 8px; display: none;">答案：错误 — 只有 interface 能合并，type alias 不能合并</p>
+    </div>
+
+    <div class="quiz-question">
+      <p><strong>2.</strong> satisfies 和 as 的区别是什么？</p>
+      <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">satisfies 会丢失类型推断</div>
+      <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">satisfies 保持推断同时验证，as 只做断言</div>
+      <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">两者完全等价</div>
+      <p class="info" style="margin-top: 8px; display: none;">答案：satisfies 保持类型推断同时验证类型，as 直接断言类型</p>
+    </div>
+
+    <div class="quiz-question">
+      <p><strong>3.</strong> declare global 必须配合什么使用？</p>
+      <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">export default</div>
+      <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">export {} 使文件成为模块</div>
+      <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">import 语句</div>
+      <p class="info" style="margin-top: 8px; display: none;">答案：declare global 必须配合 export {} 使文件成为模块</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>连线题</h2>
+    <div class="quiz-question">
+      <p><strong>4.</strong> 将方法与适用场景连线：</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+        <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">declare module → 创建新类型</div>
+        <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">declare module → 扩展 npm 包</div>
+        <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">extends → 创建新类型</div>
+        <div class="quiz-option" data-answer="wrong" onclick="selectAnswer(this)">satisfies → 替换类型</div>
+        <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">satisfies → 配置验证</div>
+        <div class="quiz-option" data-answer="correct" onclick="selectAnswer(this)">declare global → 全局命名空间</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Quiz
+  function selectAnswer(el) {
+    const question = el.closest('.quiz-question');
+    question.querySelectorAll('.quiz-option').forEach(opt => {
+      opt.classList.remove('selected', 'correct', 'wrong');
+    });
+    el.classList.add('selected');
+    
+    const answer = el.dataset.answer;
+    if (answer === 'correct') {
+      el.classList.add('correct');
+    } else if (answer === 'wrong') {
+      el.classList.add('wrong');
+    }
+    
+    const info = question.querySelector('.info');
+    if (info) info.style.display = 'block';
+  }
+
+  // Try TypeScript
+  function tryTS() {
+    const code = document.getElementById('ts-input').value;
+    const result = document.getElementById('ts-result');
+    result.innerHTML = `<span class="info">TypeScript 检查中...</span>`;
+    
+    // Simple TS syntax check
+    if (code.includes('interface') && code.includes('extends')) {
+      result.innerHTML = `<span class="ok">✅ 语法正确：interface extends 用于类型扩展</span>`;
+    } else if (code.includes('satisfies')) {
+      result.innerHTML = `<span class="ok">✅ satisfies 语法正确：保持推断同时验证类型</span>`;
+    } else if (code.includes('declare module')) {
+      result.innerHTML = `<span class="ok">✅ declare module 语法正确：用于扩展第三方库类型</span>`;
+    } else if (code.includes('declare global')) {
+      if (code.includes('export {}')) {
+        result.innerHTML = `<span class="ok">✅ declare global 语法正确</span>`;
+      } else {
+        result.innerHTML = `<span class="warning">⚠️ declare global 需要配合 export {} 使用</span>`;
+      }
+    } else {
+      result.innerHTML = `<span class="info">输入包含 TypeScript 类型声明语法</span>`;
+    }
+  }
+</script>
+
+</body>
+</html>
