@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KaTeX 数学符号语法演示</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px; text-align: center; }
+    .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    .header p { opacity: 0.9; font-size: 0.95rem; }
+    .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 4px; background: #e8e8e8; padding: 4px; border-radius: 10px; margin-bottom: 20px; }
+    .tab { padding: 10px 18px; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s; }
+    .tab:hover { background: rgba(255,255,255,0.5); }
+    .tab.active { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-weight: 600; }
+    .panel { display: none; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .panel.active { display: block; }
+    .section { margin-bottom: 32px; }
+    .section h2 { font-size: 1.1rem; color: #333; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #667eea; }
+    .section h3 { font-size: 0.95rem; color: #555; margin: 16px 0 8px; }
+    .formula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .formula-card { background: #fafafa; border-radius: 8px; padding: 14px; border: 1px solid #eee; }
+    .formula-display { background: #f0f4ff; border-radius: 6px; padding: 12px; min-height: 40px; text-align: center; font-size: 1.1rem; margin-bottom: 8px; }
+    .formula-code { font-family: 'Monaco', 'Menlo', monospace; font-size: 0.78rem; background: #2d2d2d; color: #f8f8f2; padding: 8px 10px; border-radius: 4px; word-break: break-all; }
+    .formula-label { font-size: 0.75rem; color: #888; margin-bottom: 4px; }
+    .live-editor { background: #fafafa; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+    .live-editor textarea { width: 100%; height: 80px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.85rem; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: vertical; margin-bottom: 10px; }
+    .live-editor button { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+    .live-editor button:hover { background: #5568d3; }
+    .live-preview { background: #f0f4ff; border-radius: 6px; padding: 16px; min-height: 50px; text-align: center; font-size: 1.2rem; margin-top: 10px; }
+    .live-error { color: #e53e3e; font-size: 0.85rem; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: #667eea; color: white; padding: 10px 8px; text-align: left; }
+    td { padding: 8px; border-bottom: 1px solid #eee; }
+    tr:hover { background: #fafafa; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; }
+    .quiz { background: #fff8e1; border-radius: 8px; padding: 16px; margin-top: 16px; }
+    .quiz h4 { margin-bottom: 12px; color: #333; }
+    .quiz-option { display: block; background: white; border: 1px solid #ddd; padding: 10px 14px; border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
+    .quiz-option:hover { border-color: #667eea; }
+    .quiz-result { margin-top: 12px; padding: 10px; border-radius: 6px; font-weight: 600; }
+    .quiz-correct { background: #c6f6d5; color: #22543d; }
+    .quiz-wrong { background: #fed7d7; color: #742a2a; }
+    .footer { text-align: center; padding: 24px; color: #888; font-size: 0.85rem; }
+    @media (max-width: 600px) { .formula-grid { grid-template-columns: 1fr; } .tab { padding: 8px 12px; font-size: 0.8rem; } }
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1>📐 KaTeX 数学符号语法演示</h1>
+  <p>KaTeX 支持的 LaTeX 数学符号完整参考 | 可交互编辑</p>
+</div>
+<div class="container">
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="overview">概念总览</button>
+    <button class="tab" data-tab="greek">希腊字母</button>
+    <button class="tab" data-tab="operator">运算符</button>
+    <button class="tab" data-tab="relation">关系符号</button>
+    <button class="tab" data-tab="arrow">箭头</button>
+    <button class="tab" data-tab="matrix">矩阵</button>
+    <button class="tab" data-tab="live">实时编辑</button>
+    <button class="tab" data-tab="quiz">自测题</button>
+  </div>
+
+  <!-- 概念总览 -->
+  <div class="panel active" id="panel-overview">
+    <div class="section">
+      <h2>什么是 KaTeX？</h2>
+      <p style="line-height:1.7;color:#555;">KaTeX 是一个轻量级的 JavaScript 库，用于在网页中快速渲染 LaTeX 数学公式。相比 MathJax，KaTeX 渲染速度更快、输出更轻量。</p>
+    </div>
+    <div class="section">
+      <h2>基本语法规则</h2>
+      <table>
+        <tr><th>类型</th><th>示例</th><th>说明</th></tr>
+        <tr><td><code>行内公式</code></td><td>$x^2$</td><td>使用单个 $ 包裹</td></tr>
+        <tr><td><code>行间公式</code></td><td>$$x^2$$</td><td>使用双个 $ 包裹，居中显示</td></tr>
+        <tr><td><code>上标</code></td><td>x^{n}</td><td>使用 ^ 符号</td></tr>
+        <tr><td><code>下标</code></td><td>x_{i}</td><td>使用 _ 符号</td></tr>
+        <tr><td><code>分数</code></td><td>\frac{a}{b}</td><td>\frac{分子}{分母}</td></tr>
+        <tr><td><code>开方</code></td><td>\sqrt{x}</td><td>\sqrt[次数]{内容}</td></tr>
+        <tr><td><code>希腊字母</code></td><td>\alpha \beta \gamma</td><td>反斜杠 + 名称</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <h2>快速参考</h2>
+      <div class="formula-grid">
+        <div class="formula-card"><div class="formula-label">加减乘除</div><div class="formula-display" id="d1"></div></div>
+        <div class="formula-card"><div class="formula-label">分数</div><div class="formula-display" id="d2"></div></div>
+        <div class="formula-card"><div class="formula-label">开方</div><div class="formula-display" id="d3"></div></div>
+        <div class="formula-card"><div class="formula-label">求和</div><div class="formula-display" id="d4"></div></div>
+        <div class="formula-card"><div class="formula-label">积分</div><div class="formula-display" id="d5"></div></div>
+        <div class="formula-card"><div class="formula-label">矩阵</div><div class="formula-display" id="d6"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 希腊字母 -->
+  <div class="panel" id="panel-greek">
+    <div class="section">
+      <h2>小写希腊字母</h2>
+      <div class="formula-grid" id="greek-lower"></div>
+    </div>
+    <div class="section">
+      <h2>大写希腊字母</h2>
+      <div class="formula-grid" id="greek-upper"></div>
+    </div>
+    <div class="section">
+      <h2>变体字母</h2>
+      <div class="formula-grid" id="greek-variant"></div>
+    </div>
+  </div>
+
+  <!-- 运算符 -->
+  <div class="panel" id="panel-operator">
+    <div class="section">
+      <h2>基本运算符</h2>
+      <div class="formula-grid" id="op-basic"></div>
+    </div>
+    <div class="section">
+      <h2>分数与开方</h2>
+      <div class="formula-grid" id="op-frac"></div>
+    </div>
+    <div class="section">
+      <h2>上下标与求和积</h2>
+      <div class="formula-grid" id="op-notation"></div>
+    </div>
+  </div>
+
+  <!-- 关系符号 -->
+  <div class="panel" id="panel-relation">
+    <div class="section">
+      <h2>基本关系符</h2>
+      <div class="formula-grid" id="rel-basic"></div>
+    </div>
+    <div class="section">
+      <h2>集合与逻辑</h2>
+      <div class="formula-grid" id="rel-set"></div>
+    </div>
+  </div>
+
+  <!-- 箭头 -->
+  <div class="panel" id="panel-arrow">
+    <div class="section">
+      <h2>基本箭头</h2>
+      <div class="formula-grid" id="arrow-basic"></div>
+    </div>
+    <div class="section">
+      <h2>双向箭头</h2>
+      <div class="formula-grid" id="arrow-double"></div>
+    </div>
+  </div>
+
+  <!-- 矩阵 -->
+  <div class="panel" id="panel-matrix">
+    <div class="section">
+      <h2>矩阵分隔符</h2>
+      <div class="formula-grid" id="mat-delim"></div>
+    </div>
+    <div class="section">
+      <h2>省略矩阵</h2>
+      <div class="formula-grid" id="mat-ellipsis"></div>
+    </div>
+    <div class="section">
+      <h2>实战：线性方程组</h2>
+      <div class="formula-card" style="grid-column:1/-1">
+        <div class="formula-display" id="mat-system"></div>
+        <div class="formula-code">\begin{cases} a_1x + b_1y = c_1 \\ a_2x + b_2y = c_2 \end{cases}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 实时编辑 -->
+  <div class="panel" id="panel-live">
+    <div class="live-editor">
+      <h3 style="margin-bottom:12px;">📝 输入 LaTeX 公式，实时预览</h3>
+      <textarea id="latex-input" placeholder="输入 LaTeX 公式，如：c = \pm\sqrt{a^2 + b^2}">c = \pm\sqrt{a^2 + b^2}</textarea>
+      <button onclick="renderLive()">渲染预览</button>
+      <div id="live-preview" class="live-preview"></div>
+      <div id="live-error" class="live-error"></div>
+    </div>
+    <div class="section">
+      <h2>常用公式模板</h2>
+      <div class="formula-grid">
+        <div class="formula-card" style="cursor:pointer" onclick="useTemplate('x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}')">
+          <div class="formula-label">点击使用</div>
+          <div class="formula-display">$$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$$</div>
+          <div class="formula-code">二次公式</div>
+        </div>
+        <div class="formula-card" style="cursor:pointer" onclick="useTemplate('e^{i\\pi} + 1 = 0')">
+          <div class="formula-label">点击使用</div>
+          <div class="formula-display">$$e^{i\pi} + 1 = 0$$</div>
+          <div class="formula-code">欧拉公式</div>
+        </div>
+        <div class="formula-card" style="cursor:pointer" onclick="useTemplate('\\hat{f}(\\xi) = \\int_{-\\infty}^{\\infty} f(x) e^{-2\\pi i x \\xi} dx')">
+          <div class="formula-label">点击使用</div>
+          <div class="formula-display">$$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x) e^{-2\pi i x \xi} dx$$</div>
+          <div class="formula-code">傅里叶变换</div>
+        </div>
+        <div class="formula-card" style="cursor:pointer" onclick="useTemplate('\\sum_{i=1}^{n} x_i = x_1 + x_2 + \\cdots + x_n')">
+          <div class="formula-label">点击使用</div>
+          <div class="formula-display">$$\sum_{i=1}^{n} x_i = x_1 + x_2 + \cdots + x_n$$</div>
+          <div class="formula-code">求和公式</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自测题 -->
+  <div class="panel" id="panel-quiz">
+    <div class="quiz">
+      <h4>Q1: 如何输入分数 $\frac{a}{b}$？</h4>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">a) <code>a/b</code></div>
+      <div class="quiz-option" onclick="checkAnswer(this, true)">b) <code>\frac{a}{b}</code></div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">c) <code>frac{a}{b}</code></div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">d) <code>/frac a b</code></div>
+      <div id="q1-result"></div>
+    </div>
+    <div class="quiz">
+      <h4>Q2: 如何输入下标 $x_{max}$？</h4>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">a) <code>x_max</code></div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">b) <code>x^max</code></div>
+      <div class="quiz-option" onclick="checkAnswer(this, true)">c) <code>x_{max}</code></div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">d) <code>x[max]</code></div>
+      <div id="q2-result"></div>
+    </div>
+    <div class="quiz">
+      <h4>Q3: $\sum_{i=1}^{n}$ 表示什么？</h4>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">a) 阶乘</div>
+      <div class="quiz-option" onclick="checkAnswer(this, true)">b) 求和（从 i=1 到 n）</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">c) 积分</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">d) 乘积</div>
+      <div id="q3-result"></div>
+    </div>
+    <div class="quiz">
+      <h4>Q4: $\forall$ 是什么符号？</h4>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">a) 存在量词</div>
+      <div class="quiz-option" onclick="checkAnswer(this, true)">b) 全称量词（对于所有）</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">c) 逻辑与</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">d) 空集</div>
+      <div id="q4-result"></div>
+    </div>
+    <div class="quiz">
+      <h4>Q5: $\begin{pmatrix}1 & 2 \\ 3 & 4\end{pmatrix}$ 是什么？</h4>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">a) 行列式</div>
+      <div class="quiz-option" onclick="checkAnswer(this, true)">b) 圆括号矩阵</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">c) 向量</div>
+      <div class="quiz-option" onclick="checkAnswer(this, false)">d) 方程组</div>
+      <div id="q5-result"></div>
+    </div>
+  </div>
+</div>
+<div class="footer">KaTeX v0.16.9 | 资料来源：katex.org</div>
+
+<script>
+function renderKatex(el, latex) {
+  try {
+    katex.render(latex, el, { throwOnError: false, displayMode: true });
+  } catch(e) {
+    el.textContent = latex;
+  }
+}
+
+function renderCard(container, label, latex) {
+  const card = document.createElement('div');
+  card.className = 'formula-card';
+  card.innerHTML = `<div class="formula-label">${label}</div><div class="formula-display"></div><div class="formula-code">${latex}</div>`;
+  renderKatex(card.querySelector('.formula-display'), latex);
+  container.appendChild(card);
+}
+
+// 初始化数据
+const greekLower = [
+  ['α','\\alpha'],['β','\\beta'],['γ','\\gamma'],['δ','\\delta'],['ε','\\epsilon'],
+  ['ζ','\\zeta'],['η','\\eta'],['θ','\\theta'],['ι','\\iota'],['κ','\\kappa'],
+  ['λ','\\lambda'],['μ','\\mu'],['ν','\\nu'],['ξ','\\xi'],['ο','\\omicron'],
+  ['π','\\pi'],['ρ','\\rho'],['σ','\\sigma'],['τ','\\tau'],['υ','\\upsilon'],
+  ['φ','\\phi'],['χ','\\chi'],['ψ','\\psi'],['ω','\\omega']
+];
+const greekUpper = [
+  ['Γ','\\Gamma'],['Δ','\\Delta'],['Θ','\\Theta'],['Λ','\\Lambda'],
+  ['Ξ','\\Xi'],['Π','\\Pi'],['Σ','\\Sigma'],['Τ','\\Tau'],
+  ['Υ','\\Upsilon'],['Φ','\\Phi'],['Ψ','\\Psi'],['Ω','\\Omega']
+];
+const greekVariant = [
+  ['ε','\\varepsilon'],['θ','\\vartheta'],['φ','\\varphi'],['ρ','\\varrho'],['π','\\varpi'],['κ','\\varkappa']
+];
+const ops = [
+  ['a \\times b','\\times'],['a \\div b','\\div'],['a \\pm b','\\pm'],['a \\cdot b','\\cdot'],
+  ['a \\circ b','\\circ'],['a \\oplus b','\\oplus'],['a \\otimes b','\\otimes'],
+  ['a \\cup b','\\cup'],['a \\cap b','\\cap']
+];
+const fracs = [
+  ['\\frac{a}{b}','\\frac{a}{b}'],['\\dfrac{a}{b}','\\dfrac{a}{b}'],
+  ['\\sqrt{x}','\\sqrt{x}'],['\\sqrt[n]{x}','\\sqrt[n]{x}'],
+  ['x^{2}','x^{2}'],['x_{i}','x_{i}']
+];
+const notations = [
+  ['\\sum_{i=1}^{n} x_i','\\sum_{i=1}^{n} x_i'],['\\prod_{i=1}^{n} x_i','\\prod_{i=1}^{n} x_i'],
+  ['\\int_{a}^{b} f(x)dx','\\int_{a}^{b} f(x)dx'],['\\lim_{x \\to \\infty} f(x)','\\lim_{x \\to \\infty} f(x)'],
+  ['\\binom{n}{k}','\\binom{n}{k}']
+];
+const rels = [
+  ['a \\neq b','\\neq'],['a \\approx b','\\approx'],['a \\equiv b','\\equiv'],
+  ['a \\leq b','\\leq'],['a \\geq b','\\geq'],['a \\propto b','\\propto'],
+  ['x \\in A','\\in'],['x \\notin A','\\notin'],['A \\subset B','\\subset'],
+  ['A \\subseteq B','\\subseteq'],['A \\cup B','\\cup'],['A \\cap B','\\cap'],
+  ['\\emptyset','\\emptyset'],['\\forall x','\\forall'],['\\exists x','\\exists']
+];
+const arrows = [
+  ['x \\to y','\\to'],['x \\rightarrow y','\\rightarrow'],['x \\leftarrow y','\\leftarrow'],
+  ['x \\leftrightarrow y','\\leftrightarrow'],['x \\Rightarrow y','\\Rightarrow'],
+  ['x \\Leftarrow y','\\Leftarrow'],['x \\Leftrightarrow y','\\Leftrightarrow'],
+  ['x \\mapsto y','\\mapsto'],['x \\hookrightarrow y','\\hookrightarrow']
+];
+const mats = [
+  ['pmatrix','\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}'],
+  ['bmatrix','\\begin{bmatrix}1 & 2 \\\\ 3 & 4\\end{bmatrix}'],
+  ['Bmatrix','\\begin{Bmatrix}1 & 2 \\\\ 3 & 4\\end{Bmatrix}'],
+  ['vmatrix','\\begin{vmatrix}1 & 2 \\\\ 3 & 4\\end{vmatrix}'],
+  ['Vmatrix','\\begin{Vmatrix}1 & 2 \\\\ 3 & 4\\end{Vmatrix}']
+];
+
+// 渲染
+greekLower.forEach(([sym, cmd]) => renderCard(document.getElementById('greek-lower'), `${sym} = ${cmd}`, cmd));
+greekUpper.forEach(([sym, cmd]) => renderCard(document.getElementById('greek-upper'), `${sym} = ${cmd}`, cmd));
+greekVariant.forEach(([sym, cmd]) => renderCard(document.getElementById('greek-variant'), `${sym} = ${cmd}`, cmd));
+ops.forEach(([disp, cmd]) => renderCard(document.getElementById('op-basic'), disp, disp));
+fracs.forEach(([disp, cmd]) => renderCard(document.getElementById('op-frac'), disp, cmd));
+notations.forEach(([disp, cmd]) => renderCard(document.getElementById('op-notation'), disp, cmd));
+rels.forEach(([disp, cmd]) => renderCard(document.getElementById('rel-basic'), disp, disp));
+rels.slice(8).forEach(([disp, cmd]) => renderCard(document.getElementById('rel-set'), disp, disp));
+arrows.forEach(([disp, cmd]) => renderCard(document.getElementById('arrow-basic'), disp, disp));
+mats.forEach(([label, latex]) => renderCard(document.getElementById('mat-delim'), label, latex));
+
+// Overview cards
+renderKatex(document.getElementById('d1'), 'a + b = c \\quad a - b = d \\quad a \\times b \\quad a \\div b');
+renderKatex(document.getElementById('d2'), '\\frac{a}{b}');
+renderKatex(document.getElementById('d3'), 'x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}');
+renderKatex(document.getElementById('d4'), '\\sum_{i=1}^{n} x_i');
+renderKatex(document.getElementById('d5'), '\\int_{a}^{b} f(x)\\,dx');
+renderKatex(document.getElementById('d6'), '\\begin{pmatrix}1 & 2 \\\\ 3 & 4\\end{pmatrix}');
+renderKatex(document.getElementById('mat-system'), '\\begin{cases} a_1x + b_1y = c_1 \\\\ a_2x + b_2y = c_2 \\end{cases}');
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Live editor
+function renderLive() {
+  const input = document.getElementById('latex-input').value;
+  const preview = document.getElementById('live-preview');
+  const error = document.getElementById('live-error');
+  try {
+    katex.render(input, preview, { throwOnError: true, displayMode: true });
+    error.textContent = '';
+  } catch(e) {
+    error.textContent = '错误: ' + e.message;
+  }
+}
+function useTemplate(latex) {
+  document.getElementById('latex-input').value = latex;
+  renderLive();
+}
+renderLive();
+
+// Quiz
+function checkAnswer(el, correct) {
+  const result = el.parentElement.querySelector('.quiz-result') || document.createElement('div');
+  result.className = 'quiz-result ' + (correct ? 'quiz-correct' : 'quiz-wrong');
+  result.textContent = correct ? '✓ 正确!' : '✗ 错误，请再想想';
+  if (!el.parentElement.querySelector('.quiz-result')) el.parentElement.appendChild(result);
+  else {
+    const existing = el.parentElement.querySelector('.quiz-result');
+    existing.className = result.className;
+    existing.textContent = result.textContent;
+  }
+}
+</script>
+</body>
+</html>
