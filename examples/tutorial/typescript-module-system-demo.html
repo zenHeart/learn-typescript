@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript 模块引入机制 - 交互式演示</title>
+<style>
+:root{--bg:#0f1419;--surface:#1a2332;--surface2:#243044;--border:#2d3f5a;--accent:#38bdf8;--accent2:#818cf8;--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--green:#4ade80;--red:#f87171;--yellow:#fbbf24;--orange:#fb923c;--code-bg:#0d1117}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.header{background:linear-gradient(135deg,#1e3a5f 0%,#1a2332 100%);border-bottom:1px solid var(--border);padding:40px 20px 0}
+.header-inner{max-width:900px;margin:0 auto}
+.header h1{font-size:1.8rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.header p{color:var(--text-dim);font-size:0.95rem;margin-bottom:24px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 18px;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.88rem;font-weight:500;border-radius:8px 8px 0 0;transition:all 0.2s;white-space:nowrap}
+.tab:hover{color:var(--text-dim);background:rgba(255,255,255,0.04)}
+.tab.active{color:var(--accent);background:var(--surface);border:1px solid var(--border);border-bottom:1px solid var(--surface)}
+.main{max-width:900px;margin:0 auto;padding:32px 20px 60px}
+.panel{display:none}
+.panel.active{display:block}
+h2{font-size:1.3rem;color:var(--accent);margin-bottom:16px;border-left:3px solid var(--accent);padding-left:12px}
+h3{font-size:1.05rem;color:var(--text);margin:24px 0 10px}
+p{color:var(--text-dim);margin-bottom:12px;font-size:0.93rem}
+ul,ol{padding-left:24px;margin-bottom:12px}
+li{color:var(--text-dim);margin-bottom:6px;font-size:0.93rem}
+li strong{color:var(--text)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
+.card-title{font-size:0.98rem;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.badge{font-size:0.72rem;padding:2px 8px;border-radius:20px;font-weight:500}
+.badge-blue{background:rgba(56,189,248,0.15);color:var(--accent)}
+.badge-purple{background:rgba(129,140,248,0.15);color:var(--accent2)}
+.badge-green{background:rgba(74,222,128,0.15);color:var(--green)}
+.badge-yellow{background:rgba(251,191,36,0.15);color:var(--yellow)}
+.badge-red{background:rgba(248,113,113,0.15);color:var(--red)}
+.badge-orange{background:rgba(251,146,60,0.15);color:var(--orange)}
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:10px 0;overflow-x:auto}
+.code-block code{font-family:'Fira Code','Cascadia Code','Consolas',monospace;font-size:0.85rem;line-height:1.7;color:var(--text);white-space:pre}
+.code-label{font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.inline-code{background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:0.83rem;color:var(--accent)}
+.syntax-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:600px){.syntax-grid{grid-template-columns:1fr}}
+.syntax-card{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px}
+.syntax-card .label{font-size:0.78rem;color:var(--accent);font-weight:600;margin-bottom:6px}
+.syntax-card code{font-family:'Fira Code',monospace;font-size:0.82rem;color:var(--text)}
+.syntax-card .desc{font-size:0.8rem;color:var(--text-muted);margin-top:6px}
+.config-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.config-item h4{font-size:0.9rem;color:var(--accent);margin-bottom:6px}
+.config-item p{font-size:0.83rem}
+.accordion{margin-bottom:8px}
+.accordion-header{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:0.92rem;font-weight:500;color:var(--text);transition:all 0.2s}
+.accordion-header:hover{border-color:var(--accent)}
+.accordion-header .arrow{color:var(--text-muted);transition:transform 0.2s;font-size:0.8rem}
+.accordion-header.open .arrow{transform:rotate(180deg)}
+.accordion-body{display:none;padding:14px 16px;background:var(--code-bg);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-size:0.88rem;color:var(--text-dim)}
+.accordion-body.open{display:block}
+.accordion-body p{margin-bottom:8px}
+.accordion-body p:last-child{margin-bottom:0}
+.quiz-question{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
+.quiz-q{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:12px}
+.quiz-options{list-style:none;padding:0}
+.quiz-options li{padding:9px 14px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer;color:var(--text-dim);font-size:0.88rem;transition:all 0.15s}
+.quiz-options li:hover{border-color:var(--accent);color:var(--text);background:rgba(56,189,248,0.05)}
+.quiz-options li.correct{border-color:var(--green);background:rgba(74,222,128,0.1);color:var(--green)}
+.quiz-options li.wrong{border-color:var(--red);background:rgba(248,113,113,0.1);color:var(--red)}
+.quiz-options li.disabled{pointer-events:none}
+.quiz-result{margin-top:10px;font-size:0.85rem;padding:8px 12px;border-radius:6px;display:none}
+.quiz-result.show{display:block}
+.quiz-result.correct{background:rgba(74,222,128,0.1);color:var(--green)}
+.quiz-result.wrong{background:rgba(248,113,113,0.1);color:var(--red)}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.overview-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.overview-item h4{font-size:0.92rem;color:var(--accent);margin-bottom:6px}
+.overview-item p{font-size:0.83rem;margin-bottom:8px}
+.overview-item ul{padding-left:16px}
+.overview-item li{font-size:0.83rem}
+.flow-diagram{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:24px;margin:14px 0;text-align:center}
+.flow-step{display:inline-block;background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:8px 16px;margin:4px;font-size:0.83rem;color:var(--accent)}
+.flow-arrow{color:var(--text-muted);font-size:1.1rem;vertical-align:middle;margin:0 2px}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:0.88rem}
+th{text-align:left;padding:8px;color:var(--text);border-bottom:1px solid var(--border)}
+td{padding:8px;color:var(--text-dim);border-bottom:1px solid var(--border)}
+footer{text-align:center;padding:24px;color:var(--text-muted);font-size:0.8rem;border-top:1px solid var(--border);margin-top:40px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>TypeScript 模块引入机制详解</h1>
+    <p>交互式学习 · 涵盖 import/export、模块解析、paths 配置与常见问题</p>
+    <div class="tabs">
+      <button class="tab active" data-tab="overview">概念总览</button>
+      <button class="tab" data-tab="syntax">import 语法</button>
+      <button class="tab" data-tab="resolution">模块解析</button>
+      <button class="tab" data-tab="config">配置演示</button>
+      <button class="tab" data-tab="problems">常见问题</button>
+      <button class="tab" data-tab="quiz">自测题</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div id="overview" class="panel active">
+    <h2>概念总览</h2>
+    <p>TypeScript 的模块系统建立在 ES6 模块规范之上，并进行了类型层面的扩展。理解模块引入机制是掌握 TypeScript 的基石。</p>
+    <div class="overview-grid">
+      <div class="overview-item"><h4>什么是模块？</h4><p>每个 .ts/.tsx 文件都是一个独立作用域。通过 export 导出，import 导入，实现代码复用和封装。</p></div>
+      <div class="overview-item"><h4>模块解析</h4><p>编译器根据导入路径（相对/非相对）和解析策略（Classic/Node），找到实际文件位置的过程。</p></div>
+      <div class="overview-item"><h4>tsconfig 配置</h4><p>baseUrl、paths、moduleResolution 等选项控制解析行为，帮助设置路径别名和查找规则。</p></div>
+      <div class="overview-item"><h4>常见陷阱</h4><p>导入省略、ESM/CJS 混用、循环引用、.d.ts 查找失败等问题，都有对应的解决方案。</p></div>
+    </div>
+    <h3>导入类型划分</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-blue">关联导入</span> Relative Import</div>
+      <p>以 <span class="inline-code">/</span>、<span class="inline-code">./</span>、<span class="inline-code">../</span> 开头的导入，指向本地文件。</p>
+      <div class="code-block"><code>import { foo } from './foo';
+import foo from '../utils/foo';</code></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-purple">非关联导入</span> Non-relative Import</div>
+      <p>以模块名直接导入，引用第三方包或内部模块（需配置 baseUrl/paths）。</p>
+      <div class="code-block"><code>import $ from 'jquery';
+import { Component } from '@angular/core';
+import { helper } from '@/utils/helper';</code></div>
+    </div>
+    <h3>模块解析流程总览</h3>
+    <div class="flow-diagram">
+      <span class="flow-step">import 语句</span>
+      <span class="flow-arrow">-&gt;</span>
+      <span class="flow-step">解析路径类型</span>
+      <span class="flow-arrow">-&gt;</span>
+      <span class="flow-step">应用解析策略<br><small style="color:var(--text-muted)">(Classic / Node)</small></span>
+      <span class="flow-arrow">-&gt;</span>
+      <span class="flow-step">查找文件<br><small style="color:var(--text-muted)">(.ts .tsx .d.ts)</small></span>
+      <span class="flow-arrow">-&gt;</span>
+      <span class="flow-step">类型检查 ✓</span>
+    </div>
+  </div>
+
+  <div id="syntax" class="panel">
+    <h2>import 语法全解</h2>
+    <p>TypeScript 支持多种 import 语法，适用于不同场景。理解它们的差异有助于写出更精确的代码。</p>
+    <h3>1. 默认导入</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-blue">常用</span> 导入模块的 default 导出</div>
+      <div class="code-block"><div class="code-label">foo.ts (导出方)</div><code>export default class Foo { }
+export default function helper() { }</code></div>
+      <div class="code-block"><div class="code-label">使用</div><code>import Foo from './foo';
+import helper from './foo';</code></div>
+      <p>一个模块只能有一个 default 导出。导入时可以自定义名称。</p>
+    </div>
+    <h3>2. 命名导入</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-blue">常用</span> 导入指定的命名导出</div>
+      <div class="code-block"><div class="code-label">utils.ts</div><code>export const add = (a: number, b: number) => a + b;
+export const multiply = (a: number, b: number) => a * b;
+export const VERSION = '1.0.0';</code></div>
+      <div class="code-block"><div class="code-label">使用</div><code>import { add, multiply } from './utils';
+import { add as sum } from './utils'; // 重命名
+console.log(add(1, 2)); // 3</code></div>
+    </div>
+    <h3>3. 命名空间导入</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-purple">进阶</span> 将模块所有导出作为对象的属性访问</div>
+      <div class="code-block"><code>import * as Utils from './utils';
+console.log(Utils.add(1, 2));
+console.log(Utils.multiply(3, 4));</code></div>
+      <p>所有命名导出和 default 导出都被放到 <span class="inline-code">Utils</span> 对象下。</p>
+    </div>
+    <h3>4. 类型导入（type-only import）</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-green">TS 3.8+</span> 仅导入类型，编译后完全消除</div>
+      <div class="code-block"><div class="code-label">foo.ts</div><code>export type ID = string | number;
+export interface User { name: string; age: number; }
+export class Config { }</code></div>
+      <div class="code-block"><div class="code-label">使用 — 仅类型导入</div><code>import type { ID, User } from './foo';
+function process(id: ID): User { ... }</code></div>
+      <p>编译为 JavaScript 后完全消失，避免运行时依赖，同时解决导入省略问题。</p>
+    </div>
+    <h3>5. 动态导入</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-orange">异步</span> 返回 Promise，实现代码分割</div>
+      <div class="code-block"><div class="code-label">使用</div><code>const module = await import('./heavy-module');
+module.doSomething();</code></div>
+      <div class="code-block"><div class="code-label">回调风格</div><code>import('./heavy-module').then(module => {
+  module.doSomething();
+});</code></div>
+      <p>常用于按需加载大型模块（如路由懒加载），编译产物会分成独立的 chunk。</p>
+    </div>
+    <h3>6. 重导出（re-export）</h3>
+    <div class="syntax-grid">
+      <div class="syntax-card"><div class="label">命名重导出</div><code>export { foo, bar } from './module';
+export { foo as renamed } from './module';</code><div class="desc">转发命名导出</div></div>
+      <div class="syntax-card"><div class="label">整体重导出</div><code>export * from './module';
+export * as utils from './module';</code><div class="desc">转发所有导出 / 整体作为命名空间</div></div>
+    </div>
+    <h3>7. 副作用导入</h3>
+    <div class="code-block"><code>import './polyfills';
+// 执行 polyfills.ts 中的顶级代码，但不导入任何具体绑定</code></div>
+    <p>仅执行模块的顶级代码（如注册全局变量、扩展原型），不引入任何绑定。常用于 polyfill 或全局初始化。</p>
+  </div>
+
+  <div id="resolution" class="panel">
+    <h2>模块解析策略</h2>
+    <p>当 TypeScript 遇到 <span class="inline-code">import x from "path"</span> 时，它需要找到对应的文件。这个过程由 <strong>模块解析策略</strong> 控制。</p>
+    <div class="card">
+      <div class="card-title">moduleResolution 配置</div>
+      <div class="syntax-grid">
+        <div class="syntax-card"><div class="label">classic</div><code>"moduleResolution": "classic"</code><div class="desc">旧版策略，默认用于 es2015/esnext/amd/system 模块</div></div>
+        <div class="syntax-card"><div class="label">node</div><code>"moduleResolution": "node"</code><div class="desc">Node.js 风格，与 commonjs 模块配合使用</div></div>
+      </div>
+    </div>
+    <h3>Classic 策略</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-yellow">旧版</span> 了解即可</div>
+      <p><strong>关联导入</strong>（相对路径）：查找 <span class="inline-code">./path.ts</span> → <span class="inline-code">./path.d.ts</span></p>
+      <p><strong>非关联导入</strong>（模块名）：从当前目录向上逐级查找 <span class="inline-code">path.ts</span> → <span class="inline-code">path.d.ts</span></p>
+    </div>
+    <h3>Node 解析策略</h3>
+    <div class="card">
+      <div class="card-title"><span class="badge badge-blue">推荐</span> 与 Node.js 模块加载机制一致</div>
+      <p><strong>相对路径（ ./xxx 或 ../xxx）</strong></p>
+      <ol>
+        <li>查找 <span class="inline-code">./xxx.ts</span>, <span class="inline-code">./xxx.tsx</span>, <span class="inline-code">./xxx.d.ts</span></li>
+        <li>查找 <span class="inline-code">./xxx/package.json</span> 的 <span class="inline-code">types</span> 字段</li>
+        <li>查找 <span class="inline-code">./xxx/index.ts</span>, <span class="inline-code">./xxx/index.tsx</span>, <span class="inline-code">./xxx/index.d.ts</span></li>
+      </ol>
+      <p><strong>绝对路径 / 模块名（非相对）</strong></p>
+      <ol>
+        <li>在 <span class="inline-code">node_modules/</span> 逐级向上查找 <span class="inline-code">模块名.ts</span> 系列</li>
+        <li>查找 <span class="inline-code">node_modules/xxx/package.json</span> 的 types 字段</li>
+        <li>查找 <span class="inline-code">node_modules/xxx/index.ts</span> 系列</li>
+        <li>查找 <span class="inline-code">node_modules/@types/xxx.d.ts</span></li>
+      </ol>
+    </div>
+    <h3>paths vs aliases</h3>
+    <div class="card">
+      <div class="card-title">重要区别</div>
+      <table>
+        <tr><th>特性</th><th style="color:var(--accent)">paths (TS)</th><th style="color:var(--accent2)">aliases (打包工具)</th></tr>
+        <tr><td>作用阶段</td><td>类型检查 + 编译</td><td>打包时（Webpack/Vite等）</td></tr>
+        <tr><td>运行时</td><td>需要额外配置</td><td>开箱即用</td></tr>
+        <tr><td>适用工具</td><td>tsc, ts-server</td><td>Webpack, Vite, Rollup</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:0.83rem;color:var(--text-muted)">最佳实践：同时配置 tsconfig paths + 打包工具 alias，保证类型检查和运行行为一致。</p>
+    </div>
+  </div>
+
+  <div id="config" class="panel">
+    <h2>tsconfig.json 配置演示</h2>
+    <p>以下是典型项目中模块相关配置的完整示例，逐项说明作用。</p>
+    <div class="config-item">
+      <h4>完整 tsconfig 示例</h4>
+      <div class="code-block"><code>{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"]
+    },
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  }
+}</code></div>
+    </div>
+    <div class="config-item">
+      <h4>baseUrl — 基础路径</h4>
+      <p>所有非相对导入的解析会参考此路径。通常设为 <span class="inline-code">"."</span>（项目根目录）或 <span class="inline-code">"src"</span>。</p>
+      <div class="code-block"><code>"baseUrl": "."</code></div>
+    </div>
+    <div class="config-item">
+      <h4>paths — 路径别名映射</h4>
+      <p>定义模块名到实际路径的映射。路径相对于 baseUrl。</p>
+      <div class="code-block"><code>"paths": {
+  "@/*": ["src/*"],
+  "@components/*": ["src/components/*"],
+  "jquery": ["node_modules/jquery/dist/jquery.min"]
+}</code></div>
+      <p>使用：<span class="inline-code">import Button from '@/components/Button'</span></p>
+    </div>
+    <div class="config-item">
+      <h4>module — 输出模块格式</h4>
+      <div class="syntax-grid">
+        <div class="syntax-card"><div class="label">commonjs</div><code>"module": "commonjs"</code><div class="desc">require/exports，兼容性好</div></div>
+        <div class="syntax-card"><div class="label">esnext</div><code>"module": "esnext"</code><div class="desc">import/export，需打包</div></div>
+        <div class="syntax-card"><div class="label">nodenext</div><code>"module": "nodenext"</code><div class="desc">Node 官方 ESM 支持</div></div>
+        <div class="syntax-card"><div class="label">preserve</div><code>"module": "preserve"</code><div class="desc">保留 ESM，不转换</div></div>
+      </div>
+    </div>
+    <div class="config-item">
+      <h4>esModuleInterop — ESM/CJS 互操作</h4>
+      <p>启用后 <span class="inline-code">import React from 'react'</span> 能正确导入 CJS 模块。</p>
+    </div>
+    <div class="config-item">
+      <h4>typeRoots 与 types</h4>
+      <div class="code-block"><code>"typeRoots": ["./node_modules/@types"],
+"types": ["node", "express"]</code></div>
+      <p><span class="inline-code">typeRoots</span>：指定查找 @types 的目录范围。<br><span class="inline-code">types</span>：明确列出要包含的类型包。</p>
+    </div>
+  </div>
+
+  <div id="problems" class="panel">
+    <h2>常见问题与解决方案</h2>
+    <div class="accordion" onclick="toggleAccordion(this)">
+      <div class="accordion-header"><span>Cannot find module 'xxx'</span><span class="arrow">▼</span></div>
+      <div class="accordion-body">
+        <p><strong>原因：</strong>TypeScript 找不到指定路径的文件。</p>
+        <p><strong>排查步骤：</strong></p>
+        <ol>
+          <li>确认文件路径拼写正确（大小写敏感）</li>
+          <li>确认文件扩展名（.ts/.tsx/.d.ts）存在</li>
+          <li>对于非相对导入，检查 baseUrl 和 paths 配置</li>
+          <li>确认 moduleResolution 设置为 <span class="inline-code">node</span></li>
+          <li>对于 npm 包，确认已安装且 @types 存在</li>
+        </ol>
+      </div>
+    </div>
+    <div class="accordion" onclick="toggleAccordion(this)">
+      <div class="accordion-header"><span>.d.ts 类型声明文件找不到</span><span class="arrow">▼</span></div>
+      <div class="accordion-body">
+        <p><strong>排查顺序：</strong></p>
+        <ol>
+          <li>检查 npm 包是否自带 <span class="inline-code">types</span> 字段（package.json）</li>
+          <li>检查 <span class="inline-code">@types/xxx</span> 是否安装</li>
+          <li>确认 typeRoots 配置是否覆盖了默认路径</li>
+          <li>使用 <span class="inline-code">declare module "xxx"</span> 声明快捷模块</li>
+        </ol>
+        <div class="code-block"><code>// 快捷声明 — 适用于无类型的第三方模块
+declare module "my-untyped-lib" {
+  const value: any;
+  export default value;
+}</code></div>
+      </div>
+    </div>
+    <div class="accordion" onclick="toggleAccordion(this)">
+      <div class="accordion-header"><span>ESM vs CJS 混用问题</span><span class="arrow">▼</span></div>
+      <div class="accordion-body">
+        <p><strong>问题：</strong>ES 模块和 CommonJS 模块相互导入时报错。</p>
+        <p><strong>解决方案：</strong></p>
+        <ol>
+          <li>启用 <span class="inline-code">esModuleInterop: true</span></li>
+          <li>启用 <span class="inline-code">allowSyntheticDefaultImports: true</span></li>
+          <li>避免在 ESM 项目中混用 require</li>
+          <li>使用 <span class="inline-code">import type</span> 明确类型导入</li>
+        </ol>
+      </div>
+    </div>
+    <div class="accordion" onclick="toggleAccordion(this)">
+      <div class="accordion-header"><span>循环引用（Circular Dependency）</span><span class="arrow">▼</span></div>
+      <div class="accordion-body">
+        <p><strong>问题：</strong>A 导入 B，B 导入 A，导致 undefined。</p>
+        <p><strong>解决方案：</strong></p>
+        <ol>
+          <li><strong>重构设计：</strong>将共同依赖抽取到独立模块（C 模块）</li>
+          <li><strong>延迟导入：</strong>使用动态 import 在函数内部导入</li>
+          <li><strong>接口拆分：</strong>将类型定义和实现分离</li>
+          <li>避免模块级（顶层）的变量相互依赖</li>
+        </ol>
+        <div class="code-block"><code>// 动态 import 打破循环
+async function loadB() {
+  const { B } = await import('./B');
+  return new B();
+}</code></div>
+      </div>
+    </div>
+    <div class="accordion" onclick="toggleAccordion(this)">
+      <div class="accordion-header"><span>导入省略（Import Elision）</span><span class="arrow">▼</span></div>
+      <div class="accordion-body">
+        <p><strong>问题：</strong>TypeScript 认为 import 只引入类型，在编译后删除该导入，导致模块未执行。</p>
+        <div class="code-block"><code>// a.ts — 有副作用的导出
+export class Foo { }
+console.log('a module loaded');
+
+// b.ts — 只导入类型，但编译后 import 被删除
+import { Foo } from './a'; // 编译后消失！
+// a.ts 的 console.log 不会执行</code></div>
+        <p><strong>解决方案：</strong>使用 <span class="inline-code">import type</span> 明确声明仅导入类型，或单独导入一次做初始化：</p>
+        <div class="code-block"><code>import type { Foo } from './a'; // 明确是类型导入
+import './a'; // 单独导入执行副作用</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="quiz" class="panel">
+    <h2>自测题</h2>
+    <p>共 5 道选择题，点击选项查看答案。</p>
+    <div id="quiz-container"></div>
+  </div>
+
+</div>
+
+<footer><p>TypeScript 模块引入机制交互式演示 · learn-typescript</p></footer>
+
+<script>
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+function toggleAccordion(el) {
+  const body = el.querySelector('.accordion-body');
+  const header = el.querySelector('.accordion-header');
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+}
+
+const quizData = [
+  {
+    q: '以下哪种 import 语法编译后会完全消失，不产生任何 JavaScript 代码？',
+    options: ['import foo from "./module"', 'import { foo } from "./module"', 'import type { foo } from "./module"', 'import * as ns from "./module"'],
+    answer: 2
+  },
+  {
+    q: 'tsconfig.json 中 baseUrl 和 paths 配合使用，说法正确的是？',
+    options: ['paths 是运行时别名', 'paths 负责类型检查阶段的解析', 'paths 需要 baseUrl 才能生效', 'baseUrl 可以单独使用，不需要 paths'],
+    answer: 2
+  },
+  {
+    q: 'A 模块导出 default，B 模块使用 import { default as A } from "./A"，这种做法是？',
+    options: ['错误语法', '命名导入的一种形式', '默认导入', '命名空间导入'],
+    answer: 1
+  },
+  {
+    q: '遇到 "Cannot find module" 错误时，第一个排查方向是？',
+    options: ['修改 tsconfig.json 的 outDir', '检查文件路径和 baseUrl/paths 配置', '删除 node_modules', '修改 module 为 esnext'],
+    answer: 1
+  },
+  {
+    q: 'paths 配置和 Webpack/Vite 的 alias 配置的主要区别是？',
+    options: ['没有区别', 'paths 只在编译阶段生效，alias 在运行时也生效', 'alias 只在编译阶段生效', '两者完全等价'],
+    answer: 1
+  }
+];
+
+const quizContainer = document.getElementById('quiz-container');
+let score = 0;
+
+quizData.forEach((item, qi) => {
+  const div = document.createElement('div');
+  div.className = 'quiz-question';
+  const optsHtml = item.options.map((opt, oi) =>
+    '<li data-qi="' + qi + '" data-oi="' + oi + '" onclick="checkAnswer(this,' + qi + ',' + oi + ',' + item.answer + ')">' + opt + '</li>'
+  ).join('');
+  div.innerHTML = '<div class="quiz-q">' + (qi+1) + '. ' + item.q + '</div><ul class="quiz-options">' + optsHtml + '</ul><div class="quiz-result" id="res-' + qi + '"></div>';
+  quizContainer.appendChild(div);
+});
+
+window.checkAnswer = function(el, qi, optIdx, correctIdx) {
+  const opts = document.querySelectorAll('li[data-qi="' + qi + '"]');
+  opts.forEach(function(o){ o.classList.add('disabled'); });
+  const result = document.getElementById('res-' + qi);
+  if (optIdx === correctIdx) {
+    el.classList.add('correct');
+    result.className = 'quiz-result show correct';
+    result.textContent = '回答正确！';
+    score++;
+  } else {
+    el.classList.add('wrong');
+    opts[correctIdx].classList.add('correct');
+    result.className = 'quiz-result show wrong';
+    result.textContent = '回答错误，正确答案是：' + quizData[qi].options[correctIdx];
+  }
+  const answered = document.querySelectorAll('.quiz-result.show').length;
+  document.getElementById('quiz-score').textContent = '已答 ' + answered + '/5，正确 ' + score + ' 题';
+};
+
+var scoreEl = document.createElement('div');
+scoreEl.id = 'quiz-score';
+scoreEl.style.cssText = 'text-align:center;color:var(--text-muted);font-size:0.88rem;margin-top:16px;';
+scoreEl.textContent = '已答 0/5，正确 0 题';
+document.getElementById('quiz').appendChild(scoreEl);
+</script>
+
+</body>
+</html>
