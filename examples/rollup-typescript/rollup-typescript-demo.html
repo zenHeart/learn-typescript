@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rollup + TypeScript 打包配置演示</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --code-bg: #0d1117;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    /* Tab Navigation */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      background: var(--bg-card);
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      background: var(--border);
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .code-block code {
+      color: var(--text-primary);
+    }
+
+    .comment { color: #6a737d; }
+    .keyword { color: #ff7b72; }
+    .string { color: #a5d6ff; }
+    .property { color: #7ee787; }
+    .function { color: #d2a8ff; }
+    .number { color: #79c0ff; }
+
+    /* Comparison Table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .comparison-table td {
+      color: var(--text-secondary);
+    }
+
+    .comparison-table tr:hover td {
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    /* Plugin Cards */
+    .plugin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .plugin-card {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    .plugin-name {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .plugin-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Format Cards */
+    .format-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .format-card {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      transition: all 0.2s;
+    }
+
+    .format-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .format-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .format-tag {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .format-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Interactive Demo */
+    .demo-section {
+      margin: 1.5rem 0;
+    }
+
+    .demo-output {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      min-height: 100px;
+    }
+
+    .demo-output pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Steps */
+    .steps {
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding-left: 3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .step-content {
+      color: var(--text-secondary);
+    }
+
+    .step-content strong {
+      color: var(--text-primary);
+    }
+
+    /* Quiz */
+    .quiz-question {
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-question h4 {
+      margin-bottom: 0.75rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--primary);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--success);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .quiz-option.incorrect {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .quiz-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      display: none;
+    }
+
+    .quiz-result.show {
+      display: block;
+    }
+
+    .quiz-result.pass {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .quiz-result.fail {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rollup + TypeScript 打包配置演示</h1>
+    <p class="subtitle">掌握 Rollup 与 TypeScript 的集成配置方案</p>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="overview">概念总览</button>
+      <button class="tab-btn" data-tab="plugins">插件体系</button>
+      <button class="tab-btn" data-tab="tsconfig">tsconfig</button>
+      <button class="tab-btn" data-tab="formats">输出格式</button>
+      <button class="tab-btn" data-tab="example">完整示例</button>
+      <button class="tab-btn" data-tab="quiz">自测题</button>
+    </div>
+
+    <!-- Tab Contents -->
+    <div id="overview" class="tab-content active">
+      <div class="card">
+        <h3>Rollup vs Webpack vs Vite</h3>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>特性</th>
+              <th>Rollup</th>
+              <th>Webpack</th>
+              <th>Vite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>定位</td>
+              <td>库/框架打包</td>
+              <td>应用打包</td>
+              <td>开发服务器</td>
+            </tr>
+            <tr>
+              <td>Tree-shaking</td>
+              <td>✅ 原生支持</td>
+              <td>✅ 支持</td>
+              <td>✅ 基于 Rollup</td>
+            </tr>
+            <tr>
+              <td>输出格式</td>
+              <td>ES/CJS/UMD/IIFE</td>
+              <td>多格式</td>
+              <td>ES/CJS</td>
+            </tr>
+            <tr>
+              <td>配置复杂度</td>
+              <td>低</td>
+              <td>高</td>
+              <td>低</td>
+            </tr>
+            <tr>
+              <td>插件生态</td>
+              <td>适中</td>
+              <td>丰富</td>
+              <td>适中</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Rollup 打包流程</h3>
+        <div class="code-block">
+          <code><span class="comment">// 打包流程</span>
+Input Files <span class="keyword">→</span> Plugins <span class="keyword">→</span> Module Graph <span class="keyword">→</span> Bundle <span class="keyword">→</span> Output Plugins <span class="keyword">→</span> Output Files
+
+<span class="comment">// 核心优势</span>
+<span class="property">1. ES Module</span> 原生支持，Tree-shaking 效率高
+<span class="property">2. 静态分析</span>，可生成更小的包体积
+<span class="property">3. 配置文件简洁</span>，学习成本低
+<span class="property">4. 输出格式丰富</span>，适配多场景</code>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>快速开始</h3>
+        <div class="code-block">
+          <code><span class="comment"># 安装核心依赖</span>
+npm install rollup --save-dev
+
+<span class="comment"># 安装 TypeScript 相关插件</span>
+npm install @rollup/plugin-typescript @rollup/plugin-node-resolve @rollup/plugin-commonjs --save-dev
+
+<span class="comment"># 创建 rollup.config.js</span>
+<span class="keyword">export default</span> {
+  input: <span class="string">'src/index.ts'</span>,
+  output: {
+    format: <span class="string">'es'</span>,
+    file: <span class="string">'dist/bundle.mjs'</span>
+  },
+  plugins: [
+    <span class="comment">/* 插件配置 */</span>
+  ]
+};
+
+<span class="comment"># 执行打包</span>
+npx rollup -c</code>
+        </div>
+      </div>
+    </div>
+
+    <div id="plugins" class="tab-content">
+      <div class="card">
+        <h3>四大核心插件</h3>
+        <div class="plugin-grid">
+          <div class="plugin-card">
+            <div class="plugin-name">@rollup/plugin-typescript</div>
+            <div class="plugin-desc">TypeScript 编译插件，将 .ts/.tsx 文件编译为 JavaScript，支持声明文件生成。</div>
+          </div>
+          <div class="plugin-card">
+            <div class="plugin-name">@rollup/plugin-node-resolve</div>
+            <div class="plugin-desc">模块解析插件，帮助 Rollup 查找 node_modules 中的第三方模块。</div>
+          </div>
+          <div class="plugin-card">
+            <div class="plugin-name">@rollup/plugin-commonjs</div>
+            <div class="plugin-desc">CommonJS 转换插件，将 CommonJS 模块转换为 ES Module。</div>
+          </div>
+          <div class="plugin-card">
+            <div class="plugin-name">@rollup/plugin-terser</div>
+            <div class="plugin-desc">压缩插件，生产环境使用，去除冗余代码和注释。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>插件配置示例</h3>
+        <div class="code-block">
+          <code><span class="keyword">import</span> typescript <span class="keyword">from</span> <span class="string">'@rollup/plugin-typescript'</span>;
+<span class="keyword">import</span> resolve <span class="keyword">from</span> <span class="string">'@rollup/plugin-node-resolve'</span>;
+<span class="keyword">import</span> commonjs <span class="keyword">from</span> <span class="string">'@rollup/plugin-commonjs'</span>;
+<span class="keyword">import</span> terser <span class="keyword">from</span> <span class="string">'@rollup/plugin-terser'</span>;
+
+<span class="keyword">const</span> production = !process.env.ROLLUP_WATCH;
+
+<span class="keyword">export default</span> {
+  plugins: [
+    <span class="comment">// TypeScript 编译</span>
+    typescript({
+      tsconfig: <span class="string">'./tsconfig.json'</span>,
+      declaration: <span class="keyword">true</span>,
+      declarationDir: <span class="string">'./dist/types'</span>
+    }),
+    
+    <span class="comment">// 解析 node_modules</span>
+    resolve({
+      extensions: [<span class="string">'.js'</span>, <span class="string">'.ts'</span>, <span class="string">'.jsx'</span>, <span class="string">'.tsx'</span>],
+      preferBuiltins: <span class="keyword">false</span>
+    }),
+    
+    <span class="comment">// CommonJS 转换</span>
+    commonjs({
+      transformMixedEsModules: <span class="keyword">true</span>
+    }),
+    
+    <span class="comment">// 生产环境压缩</span>
+    production && terser({
+      compress: {
+        drop_console: <span class="keyword">true</span>
+      }
+    })
+  ]
+};</code>
+        </div>
+      </div>
+    </div>
+
+    <div id="tsconfig" class="tab-content">
+      <div class="card">
+        <h3>tsconfig.json 推荐配置</h3>
+        <div class="code-block">
+          <code>{
+  <span class="property">"compilerOptions"</span>: {
+    <span class="comment">// 关键：保持 ES Module 特性</span>
+    <span class="property">"target"</span>: <span class="string">"ESNext"</span>,
+    <span class="property">"module"</span>: <span class="string">"ESNext"</span>,
+    
+    <span class="property">"moduleResolution"</span>: <span class="string">"node"</span>,
+    <span class="property">"strict"</span>: <span class="keyword">true</span>,
+    
+    <span class="comment">// 声明文件配置</span>
+    <span class="property">"declaration"</span>: <span class="keyword">true</span>,
+    <span class="property">"declarationDir"</span>: <span class="string">"./dist/types"</span>,
+    <span class="property">"sourceMap"</span>: <span class="keyword">true</span>,
+    
+    <span class="comment">// ES Module 兼容</span>
+    <span class="property">"esModuleInterop"</span>: <span class="keyword">true</span>,
+    <span class="property">"allowSyntheticDefaultImports"</span>: <span class="keyword">true</span>,
+    
+    <span class="comment">// 跳过 node_modules 检查</span>
+    <span class="property">"skipLibCheck"</span>: <span class="keyword">true</span>
+  },
+  <span class="property">"include"</span>: [<span class="string">"src/**/*"</span>],
+  <span class="property">"exclude"</span>: [<span class="string">"node_modules"</span>, <span class="string">"dist"</span>]
+}</code>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>关键配置说明</h3>
+        <div class="code-block">
+          <code><span class="comment">// 1. target: "ESNext"</span>
+<span class="comment">// 让 TypeScript 编译为最新的 JavaScript 语法</span>
+<span class="comment">// 保留 ES Module 的 import/export 语句</span>
+
+<span class="comment">// 2. module: "ESNext"</span>
+<span class="comment">// Rollup 需要 ES Module 格式进行 Tree-shaking</span>
+<span class="comment">// 不要使用 "CommonJS"，会丢失 Tree-shaking 能力</span>
+
+<span class="comment">// 3. declaration: true</span>
+<span class="comment">// 生成 .d.ts 声明文件</span>
+<span class="comment">// 库使用者需要类型提示</span>
+
+<span class="comment">// 4. skipLibCheck: true</span>
+<span class="comment">// 跳过 node_modules 的类型检查</span>
+<span class="comment">// 加快编译速度</span></code>
+        </div>
+      </div>
+    </div>
+
+    <div id="formats" class="tab-content">
+      <div class="card">
+        <h3>四种输出格式对比</h3>
+        <div class="format-grid">
+          <div class="format-card">
+            <div class="format-name">ES Module</div>
+            <span class="format-tag">.mjs / .esm.js</span>
+            <div class="format-desc">现代浏览器和打包工具首选，支持 Tree-shaking，适合 npm package 的 main 字段。</div>
+          </div>
+          <div class="format-card">
+            <div class="format-name">CommonJS</div>
+            <span class="format-tag">.cjs / .js</span>
+            <div class="format-desc">Node.js 环境使用，require() 语法，适合 package.json 的 main 字段。</div>
+          </div>
+          <div class="format-card">
+            <div class="format-name">UMD</div>
+            <span class="format-tag">.umd.js</span>
+            <div class="format-desc">通用格式，支持 AMD/CommonJS/全局变量，适合需要同时支持多环境的库。</div>
+          </div>
+          <div class="format-card">
+            <div class="format-name">IIFE</div>
+            <span class="format-tag">.iife.js</span>
+            <div class="format-desc">自执行函数，直接运行于浏览器，通过 script 标签引入。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>多格式输出配置</h3>
+        <div class="code-block">
+          <code><span class="keyword">export default</span> {
+  input: <span class="string">'src/index.ts'</span>,
+  
+  <span class="comment">// 多格式输出</span>
+  output: [
+    <span class="comment">// ES Module</span>
+    {
+      format: <span class="string">'es'</span>,
+      file: <span class="string">'dist/index.mjs'</span>,
+      sourcemap: <span class="keyword">true</span>
+    },
+    <span class="comment">// CommonJS</span>
+    {
+      format: <span class="string">'cjs'</span>,
+      file: <span class="string">'dist/index.cjs.js'</span>,
+      sourcemap: <span class="keyword">true</span>
+    },
+    <span class="comment">// UMD</span>
+    {
+      format: <span class="string">'umd'</span>,
+      file: <span class="string">'dist/index.umd.js'</span>,
+      name: <span class="string">'MyLibrary'</span>,
+      globals: {
+        lodash: <span class="string">'_'</span>  <span class="comment">// 外部依赖</span>
+      }
+    }
+  ]
+};</code>
+        </div>
+      </div>
+    </div>
+
+    <div id="example" class="tab-content">
+      <div class="card">
+        <h3>完整项目配置</h3>
+        <div class="code-block">
+          <code><span class="comment">// rollup.config.js</span>
+<span class="keyword">import</span> resolve <span class="keyword">from</span> <span class="string">'@rollup/plugin-node-resolve'</span>;
+<span class="keyword">import</span> commonjs <span class="keyword">from</span> <span class="string">'@rollup/plugin-commonjs'</span>;
+<span class="keyword">import</span> typescript <span class="keyword">from</span> <span class="string">'@rollup/plugin-typescript'</span>;
+<span class="keyword">import</span> terser <span class="keyword">from</span> <span class="string">'@rollup/plugin-terser'</span>;
+
+<span class="keyword">const</span> production = !process.env.ROLLUP_WATCH;
+
+<span class="keyword">export default</span> {
+  input: <span class="string">'src/index.ts'</span>,
+  external: [<span class="string">'lodash'</span>],
+  
+  plugins: [
+    typescript({
+      tsconfig: <span class="string">'./tsconfig.json'</span>,
+      declaration: <span class="keyword">true</span>,
+      declarationDir: <span class="string">'./dist/types'</span>
+    }),
+    resolve({ extensions: [<span class="string">'.js'</span>, <span class="string">'.ts'</span>] }),
+    commonjs(),
+    production && terser()
+  ],
+  
+  output: [
+    { format: <span class="string">'es'</span>, file: <span class="string">'dist/index.mjs'</span> },
+    { format: <span class="string">'cjs'</span>, file: <span class="string">'dist/index.cjs.js'</span> },
+    { 
+      format: <span class="string">'umd'</span>, 
+      file: <span class="string">'dist/index.umd.js'</span>,
+      name: <span class="string">'MyLibrary'</span>,
+      globals: { lodash: <span class="string">'_'</span> }
+    }
+  ]
+};</code>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>package.json 配置</h3>
+        <div class="code-block">
+          <code>{
+  <span class="property">"name"</span>: <span class="string">"my-library"</span>,
+  <span class="property">"version"</span>: <span class="string">"1.0.0"</span>,
+  <span class="property">"type"</span>: <span class="string">"module"</span>,
+  
+  <span class="comment">// 多格式入口</span>
+  <span class="property">"main"</span>: <span class="string">"dist/index.cjs.js"</span>,
+  <span class="property">"module"</span>: <span class="string">"dist/index.mjs"</span>,
+  <span class="property">"types"</span>: <span class="string">"dist/types/index.d.ts"</span>,
+  
+  <span class="property">"exports"</span>: {
+    <span class="string">"."</span>: {
+      <span class="property">"import"</span>: <span class="string">"dist/index.mjs"</span>,
+      <span class="property">"require"</span>: <span class="string">"dist/index.cjs.js"</span>,
+      <span class="property">"types"</span>: <span class="string">"dist/types/index.d.ts"</span>
+    }
+  },
+  
+  <span class="property">"scripts"</span>: {
+    <span class="property">"build"</span>: <span class="string">"rollup -c"</span>,
+    <span class="property">"build:watch"</span>: <span class="string">"rollup -c -w"</span>
+  }
+}</code>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>安装命令汇总</h3>
+        <div class="code-block">
+          <code><span class="comment"># 核心依赖</span>
+npm install rollup --save-dev
+
+<span class="comment"># TypeScript 插件</span>
+npm install @rollup/plugin-typescript --save-dev
+
+<span class="comment"># 模块解析插件</span>
+npm install @rollup/plugin-node-resolve --save-dev
+
+<span class="comment"># CommonJS 转换插件</span>
+npm install @rollup/plugin-commonjs --save-dev
+
+<span class="comment"># 生产环境压缩插件</span>
+npm install @rollup/plugin-terser --save-dev
+
+<span class="comment"># TypeScript</span>
+npm install typescript --save-dev
+
+<span class="comment"># 一次性安装所有</span>
+npm install rollup @rollup/plugin-typescript @rollup/plugin-node-resolve @rollup/plugin-commonjs @rollup/plugin-terser typescript --save-dev</code>
+        </div>
+      </div>
+    </div>
+
+    <div id="quiz" class="tab-content">
+      <div class="card">
+        <h3>自测题</h3>
+        
+        <div class="quiz-question">
+          <h4>1. Rollup 相比 Webpack 的主要优势是什么？</h4>
+          <div class="quiz-options" data-correct="0">
+            <div class="quiz-option" data-index="0">
+              <span>A. 原生 ES Module 支持，Tree-shaking 效率更高</span>
+            </div>
+            <div class="quiz-option" data-index="1">
+              <span>B. 插件更多，生态更丰富</span>
+            </div>
+            <div class="quiz-option" data-index="2">
+              <span>C. 支持热更新</span>
+            </div>
+            <div class="quiz-option" data-index="3">
+              <span>D. 可以打包图片等资源</span>
+            </div>
+          </div>
+          <div class="quiz-result"></div>
+        </div>
+
+        <div class="quiz-question">
+          <h4>2. tsconfig.json 中 module 应该设置为什么值？</h4>
+          <div class="quiz-options" data-correct="1">
+            <div class="quiz-option" data-index="0">
+              <span>A. "CommonJS"</span>
+            </div>
+            <div class="quiz-option" data-index="1">
+              <span>B. "ESNext"</span>
+            </div>
+            <div class="quiz-option" data-index="2">
+              <span>C. "AMD"</span>
+            </div>
+            <div class="quiz-option" data-index="3">
+              <span>D. "System"</span>
+            </div>
+          </div>
+          <div class="quiz-result"></div>
+        </div>
+
+        <div class="quiz-question">
+          <h4>3. 哪个插件负责将 CommonJS 转换为 ES Module？</h4>
+          <div class="quiz-options" data-correct="2">
+            <div class="quiz-option" data-index="0">
+              <span>A. @rollup/plugin-typescript</span>
+            </div>
+            <div class="quiz-option" data-index="1">
+              <span>B. @rollup/plugin-node-resolve</span>
+            </div>
+            <div class="quiz-option" data-index="2">
+              <span>C. @rollup/plugin-commonjs</span>
+            </div>
+            <div class="quiz-option" data-index="3">
+              <span>D. @rollup/plugin-terser</span>
+            </div>
+          </div>
+          <div class="quiz-result"></div>
+        </div>
+
+        <div class="quiz-question">
+          <h4>4. package.json 中哪个字段用于 ES Module 入口？</h4>
+          <div class="quiz-options" data-correct="3">
+            <div class="quiz-option" data-index="0">
+              <span>A. main</span>
+            </div>
+            <div class="quiz-option" data-index="1">
+              <span>B. browser</span>
+            </div>
+            <div class="quiz-option" data-index="2">
+              <span>C. require</span>
+            </div>
+            <div class="quiz-option" data-index="3">
+              <span>D. module</span>
+            </div>
+          </div>
+          <div class="quiz-result"></div>
+        </div>
+
+        <div class="quiz-question">
+          <h4>5. UMD 格式支持哪些环境？</h4>
+          <div class="quiz-options" data-correct="0">
+            <div class="quiz-option" data-index="0">
+              <span>A. AMD / CommonJS / 全局变量</span>
+            </div>
+            <div class="quiz-option" data-index="1">
+              <span>B. 仅浏览器</span>
+            </div>
+            <div class="quiz-option" data-index="2">
+              <span>C. 仅 Node.js</span>
+            </div>
+            <div class="quiz-option" data-index="3">
+              <span>D. 仅 ES Module 环境</span>
+            </div>
+          </div>
+          <div class="quiz-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Rollup + TypeScript 打包配置学习演示 | 仓库：learn-typescript</p>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabId = btn.dataset.tab;
+        
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Quiz functionality
+    document.querySelectorAll('.quiz-options').forEach(options => {
+      const correct = parseInt(options.dataset.correct);
+      
+      options.querySelectorAll('.quiz-option').forEach(option => {
+        option.addEventListener('click', () => {
+          if (option.classList.contains('correct') || option.classList.contains('incorrect')) {
+            return;
+          }
+          
+          const selected = parseInt(option.dataset.index);
+          const result = option.closest('.quiz-question').querySelector('.quiz-result');
+          
+          if (selected === correct) {
+            option.classList.add('correct');
+            result.className = 'quiz-result show pass';
+            result.textContent = '✅ 回答正确！';
+          } else {
+            option.classList.add('incorrect');
+            result.className = 'quiz-result show fail';
+            result.textContent = '❌ 回答错误，正确答案是 ' + String.fromCharCode(65 + correct) + '。';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
