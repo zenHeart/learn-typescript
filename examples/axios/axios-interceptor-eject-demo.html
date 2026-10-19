@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axios 拦截器移除 - 交互式演示</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --card: #fff;
+      --text: #1a1a2e;
+      --text-secondary: #666;
+      --border: #e5e5e5;
+      --primary: #5b5fc7;
+      --primary-light: #eeeffe;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+    h1 { font-size: 1.4rem; margin-bottom: 6px; }
+    .subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 20px; }
+    .tabs { display: flex; gap: 2px; background: var(--border); border-radius: var(--radius); padding: 3px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab { padding: 8px 14px; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary); transition: all 0.2s; }
+    .tab.active { background: var(--card); color: var(--primary); font-weight: 600; box-shadow: var(--shadow); }
+    .panel { display: none; background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .panel.active { display: block; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--bg); border-radius: var(--radius); padding: 16px; }
+    .card h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--primary); }
+    .btn { display: inline-block; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; margin: 4px; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #4a4db5; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-warning { background: var(--warning); color: #fff; }
+    .btn-warning:hover { background: #d97706; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary-light); }
+    .log { background: #1a1a2e; color: #a5d6ff; padding: 12px; border-radius: 6px; font-family: 'SF Mono', Consolas, monospace; font-size: 0.78rem; max-height: 280px; overflow-y: auto; margin-top: 12px; white-space: pre-wrap; }
+    .log-entry { margin-bottom: 4px; }
+    .log-entry.req { color: #79c0ff; }
+    .log-entry.res { color: #a5d6ff; }
+    .log-entry.info { color: #ffa657; }
+    .log-entry.warn { color: #e3b341; }
+    .log-entry.error { color: #ff7b72; }
+    .log-entry.success { color: #7ee787; }
+    .counter { display: inline-block; background: var(--primary); color: white; border-radius: 12px; padding: 2px 8px; font-size: 0.75rem; min-width: 20px; text-align: center; }
+    .status { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .status-item { background: var(--bg); padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; }
+    .status-item span { font-weight: 600; color: var(--primary); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 12px; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-secondary); font-weight: 600; }
+    code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 0.82em; color: var(--primary); }
+    .method-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .method-eject { background: #fef2f2; color: #dc2626; }
+    .method-delete { background: #fff7ed; color: #ea580c; }
+    .method-use { background: #eff6ff; color: #2563eb; }
+    .method-clear { background: #fefce8; color: #ca8a04; }
+    .arrow { color: var(--text-secondary); font-size: 1.2em; vertical-align: middle; }
+    .handlers-view { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+    .handler-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border-radius: 6px; font-size: 0.83rem; }
+    .handler-item.null { opacity: 0.4; text-decoration: line-through; }
+    .handler-id { display: inline-block; min-width: 28px; height: 28px; line-height: 28px; text-align: center; background: var(--primary); color: white; border-radius: 50%; font-size: 0.75rem; font-weight: 700; }
+    .handler-item.null .handler-id { background: #ccc; }
+    .handler-fn { flex: 1; font-family: monospace; font-size: 0.8rem; color: var(--text-secondary); }
+    .question { background: #fffbeb; border-left: 3px solid var(--warning); padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 12px; }
+    .question strong { color: var(--warning); }
+    .answer { background: #f0fdf4; border-left: 3px solid var(--success); padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 12px; }
+    .answer strong { color: var(--success); }
+    .quiz-box { background: var(--bg); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+    .quiz-box h4 { margin-bottom: 10px; font-size: 0.9rem; }
+    .quiz-option { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; cursor: pointer; transition: all 0.2s; }
+    .quiz-option:hover { border-color: var(--primary); }
+    .quiz-option.correct { border-color: var(--success); background: #f0fdf4; }
+    .quiz-option.wrong { border-color: var(--danger); background: #fef2f2; }
+  </style>
+</head>
+<body>
+  <h1>Axios 拦截器移除（Eject）— 交互式演示</h1>
+  <p class="subtitle">演示 axios 拦截器的注册、移除（eject）与清空操作，理解 handlers 数组管理机制</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="overview">概念总览</button>
+    <button class="tab" data-tab="demo">交互演示</button>
+    <button class="tab" data-tab="handlers">handlers 数组</button>
+    <button class="tab" data-tab="methods">移除方法对比</button>
+    <button class="tab" data-tab="scenarios">实战场景</button>
+    <button class="tab" data-tab="quiz">自测题</button>
+  </div>
+
+  <!-- Tab 1: 概念总览 -->
+  <div class="panel active" id="panel-overview">
+    <div class="grid">
+      <div class="card">
+        <h3>什么是拦截器？</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px">Axios 拦截器是一种全局请求/响应预处理机制，可以在请求发出前或响应到达后执行自定义逻辑。</p>
+        <table>
+          <tr><th>类型</th><th>注册方法</th><th>用途</th></tr>
+          <tr><td>请求拦截器</td><td><code>axios.interceptors.request.use()</code></td><td>添加 Token、日志</td></tr>
+          <tr><td>响应拦截器</td><td><code>axios.interceptors.response.use()</code></td><td>错误处理、数据转换</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>为什么需要移除？</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px">常见场景：</p>
+        <ul style="font-size:0.83rem;padding-left:16px;color:var(--text-secondary)">
+          <li>测试时需要隔离全局拦截器</li>
+          <li>Token 过期后刷新并重新注册</li>
+          <li>动态切换不同拦截器配置</li>
+          <li>防止内存泄漏（组件卸载时清理）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>use() 返回什么？</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px">每次调用 <code>use(onFulfilled, onRejected)</code> 会返回一个<strong>数字 ID</strong>：</p>
+        <div class="log" style="background:#1a1a2e;color:#a5d6ff;font-size:0.78rem;padding:10px">
+<span style="color:#7ee787">const id1 =</span> axios.interceptors.request.use(fn1);
+<span style="color:#7ee787">const id2 =</span> axios.interceptors.request.use(fn2);
+console.log(id1); <span style="color:#ffa657">// → 0</span>
+console.log(id2); <span style="color:#ffa657">// → 1</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">这个 ID 就是后续 <code>eject(id)</code> 的参数。</p>
+      </div>
+      <div class="card">
+        <h3>拦截器执行顺序</h3>
+        <table>
+          <tr><th>方向</th><th>执行顺序</th></tr>
+          <tr><td>请求拦截器</td><td>按注册顺序<strong>倒序</strong>执行（最后注册的先执行）</td></tr>
+          <tr><td>响应拦截器</td><td>按注册顺序<strong>正序</strong>执行（最先注册的先执行）</td></tr>
+        </table>
+        <div class="log" style="font-size:0.75rem;margin-top:8px;background:#1a1a2e;color:#a5d6ff;padding:10px">
+req #1 → req #2 <span style="color:#ffa657">（倒序）</span>
+res #1 ← res #2 <span style="color:#ffa657">（正序）</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 交互演示 -->
+  <div class="panel" id="panel-demo">
+    <div class="status">
+      <div class="status-item">请求拦截器：<span id="req-count" class="counter">0</span></div>
+      <div class="status-item">响应拦截器：<span id="res-count" class="counter">0</span></div>
+      <div class="status-item">日志条目：<span id="log-count" class="counter">0</span></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>操作</h3>
+        <div style="margin-bottom:12px">
+          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:6px">添加拦截器：</p>
+          <button class="btn btn-primary" onclick="addRequestInterceptor()">+ 请求拦截器</button>
+          <button class="btn btn-primary" onclick="addResponseInterceptor()">+ 响应拦截器</button>
+        </div>
+        <div style="margin-bottom:12px">
+          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:6px">移除拦截器（按 ID）：</p>
+          <button class="btn btn-danger" onclick="ejectFirstRequest()">eject 请求#0</button>
+          <button class="btn btn-danger" onclick="ejectFirstResponse()">eject 响应#0</button>
+        </div>
+        <div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:6px">清空所有：</p>
+          <button class="btn btn-warning" onclick="clearAllRequest()">清空请求</button>
+          <button class="btn btn-warning" onclick="clearAllResponse()">清空响应</button>
+          <button class="btn btn-warning" onclick="clearAllBoth()">清空全部</button>
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn btn-outline" onclick="simulateRequest()">模拟请求</button>
+          <button class="btn btn-outline" onclick="clearLog()">清空日志</button>
+        </div>
+      </div>
+      <div class="card" style="max-height:400px;overflow-y:auto">
+        <h3>日志 <span id="log-counter" style="font-size:0.75rem;color:var(--text-secondary);font-weight:400"></span></h3>
+        <div id="log-area" class="log"><span style="color:#6b7280">点击上方按钮开始操作...</span></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>拦截器 handlers 数组状态</h3>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px">
+        <div style="flex:1;min-width:200px">
+          <p style="font-size:0.82rem;font-weight:600;margin-bottom:8px">请求拦截器 handlers</p>
+          <div id="req-handlers" class="handlers-view"></div>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <p style="font-size:0.82rem;font-weight:600;margin-bottom:8px">响应拦截器 handlers</p>
+          <div id="res-handlers" class="handlers-view"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: handlers 数组 -->
+  <div class="panel" id="panel-handlers">
+    <div class="card" style="margin-bottom:16px">
+      <h3>handlers 数组是什么？</h3>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:8px">Axios 内部用数组存储拦截器，每个 <code>use()</code> 调用在数组末尾添加一项，返回值就是该项的索引。</p>
+      <div class="log" style="margin-top:12px;font-size:0.82rem">
+<span style="color:#7ee787">// 注册两个请求拦截器</span>
+<span style="color:#ffa657">const</span> id1 = axios.interceptors.request.use(fnA); <span style="color:#6b7280">// handlers[0]</span>
+<span style="color:#ffa657">const</span> id2 = axios.interceptors.request.use(fnB); <span style="color:#6b7280">// handlers[1]</span>
+
+console.log(axios.interceptors.request.handlers);
+<span style="color:#7ee787">// [ [interceptor], [interceptor] ]</span>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>eject 后数组变化</h3>
+      <div class="log" style="font-size:0.82rem">
+<span style="color:#ffa657">const</span> id1 = axios.interceptors.request.use(fn1); <span style="color:#6b7280">// → handlers[0]</span>
+<span style="color:#ffa657">const</span> id2 = axios.interceptors.request.use(fn2); <span style="color:#6b7280">// → handlers[1]</span>
+
+axios.interceptors.request.eject(id1);
+<span style="color:#6b7280">// handlers → [ null, [interceptor] ]</span>
+<span style="color:#6b7280">// 注意：eject 后数组长度不变，该位置变为 null</span>
+
+<span style="color:#ffa657">const</span> id3 = axios.interceptors.request.use(fn3); <span style="color:#6b7280">// handlers[2] — 新 ID 不会复用</span>
+<span style="color:#6b7280">// handlers → [ null, [interceptor], [interceptor] ]</span>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>查看活跃拦截器</h3>
+      <div class="log" style="font-size:0.82rem">
+<span style="color:#7ee787">// 过滤出非 null 的拦截器</span>
+<span style="color:#ffa657">const</span> active = axios.interceptors.request.handlers
+  .filter(Boolean)
+  .map(h => h.fulfilled?.name || 'anonymous');
+
+console.log(active); <span style="color:#ffa657">// ['请求拦截器 #1', '请求拦截器 #2']</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>ID 分配规则</h3>
+      <table>
+        <tr><th>操作</th><th>handlers 变化</th><th>返回值（ID）</th></tr>
+        <tr><td>use(fn1)</td><td>[ [interceptor] ]</td><td>0</td></tr>
+        <tr><td>use(fn2)</td><td>[ [interceptor], [interceptor] ]</td><td>1</td></tr>
+        <tr><td>eject(0)</td><td>[ null, [interceptor] ]</td><td>—</td></tr>
+        <tr><td>use(fn3)</td><td>[ null, [interceptor], [interceptor] ]</td><td>2</td></tr>
+        <tr><td>clearAll()</td><td>[ ]</td><td>—</td></tr>
+      </table>
+      <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">⚠️ eject 后新注册的 ID 不会复用被 eject 的索引，而是继续递增。</p>
+    </div>
+  </div>
+
+  <!-- Tab 4: 移除方法对比 -->
+  <div class="panel" id="panel-methods">
+    <div class="grid">
+      <div class="card">
+        <h3><span class="method-tag method-eject">eject</span> 推荐</h3>
+        <div class="log" style="font-size:0.82rem">
+axios.interceptors.request.eject(interceptorId);
+axios.interceptors.response.eject(interceptorId);
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">✅ 推荐：语义明确、安全性高</p>
+      </div>
+      <div class="card">
+        <h3><span class="method-tag method-delete">delete</span> 可用</h3>
+        <div class="log" style="font-size:0.82rem">
+delete axios.interceptors.request.handlers[interceptorId];
+delete axios.interceptors.response.handlers[interceptorId];
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">⚠️ 直接操作数组，与 eject 效果相同，但不推荐</p>
+      </div>
+      <div class="card">
+        <h3><span class="method-tag method-clear">handlers = []</span> 清空全部</h3>
+        <div class="log" style="font-size:0.82rem">
+axios.interceptors.request.handlers = [];
+axios.interceptors.response.handlers = [];
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">⚠️ 一次性清空所有拦截器，常用于测试环境</p>
+      </div>
+      <div class="card">
+        <h3><span class="method-tag method-use">use</span> 返回值必须保存</h3>
+        <div class="log" style="font-size:0.82rem">
+<span style="color:#7ee787">// ❌ 错误</span>
+axios.interceptors.request.use(onFulfilled);
+<span style="color:#6b7280">// 如果不保存返回值，无法后续移除</span>
+
+<span style="color:#7ee787">// ✅ 正确</span>
+<span style="color:#ffa657">const</span> id = axios.interceptors.request.use(onFulfilled);
+<span style="color:#6b7280">// 保存到变量、Map 或数组中</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">❌ 常见错误：没有保存 ID，后续无法移除</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>方法对比表</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>方法</th><th>作用范围</th><th>推荐场景</th><th>安全性</th></tr>
+          <tr><td><code>eject(id)</code></td><td>单个拦截器</td><td>日常使用</td><td>✅ 高</td></tr>
+          <tr><td><code>delete handlers[id]</code></td><td>单个拦截器</td><td>备用方案</td><td>⚠️ 中</td></tr>
+          <tr><td><code>handlers = []</code></td><td>全部拦截器</td><td>测试隔离</td><td>⚠️ 中</td></tr>
+          <tr><td><code>handlers.splice(id, 1)</code></td><td>单个拦截器</td><td>不推荐</td><td>❌ 低</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 5: 实战场景 -->
+  <div class="panel" id="panel-scenarios">
+    <div class="card" style="margin-bottom:16px">
+      <h3>场景一：测试环境隔离</h3>
+      <div class="log" style="font-size:0.82rem">
+<span style="color:#7ee787">// jest beforeEach</span>
+beforeEach(() => {
+  <span style="color:#6b7280">// 每个测试前清除全局拦截器，确保测试隔离</span>
+  axios.interceptors.request.handlers = [];
+  axios.interceptors.response.handlers = [];
+});
+      </div>
+      <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px">适用：单元测试、集成测试，确保测试之间互不干扰</p>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>场景二：Token 动态刷新</h3>
+      <div class="log" style="font-size:0.78rem">
+<span style="color:#ffa657">let</span> reqId = <span style="color:#79c0ff">null</span>;
+<span style="color:#ffa657">let</span> resId = <span style="color:#79c0ff">null</span>;
+
+<span style="color:#ffa657">function</span> setup(token) {
+  <span style="color:#6b7280">// 1. 移除旧的拦截器</span>
+  <span style="color:#ffa657">if</span> (reqId !== <span style="color:#79c0ff">null</span>) axios.interceptors.request.eject(reqId);
+  <span style="color:#ffa657">if</span> (resId !== <span style="color:#79c0ff">null</span>) axios.interceptors.response.eject(resId);
+
+  <span style="color:#6b7280">// 2. 添加新的拦截器</span>
+  reqId = axios.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${token}`;
+    <span style="color:#ffa657">return</span> config;
+  });
+}
+
+<span style="color:#6b7280">// 登录后设置 Token</span>
+setup(newToken);
+
+<span style="color:#6b7280">// 刷新 Token 时重新设置</span>
+setup(refreshedToken);
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>场景三：React 组件卸载清理</h3>
+      <div class="log" style="font-size:0.78rem">
+<span style="color:#ffa657">import</span> { useEffect } <span style="color:#ffa657">from</span> 'react';
+
+<span style="color:#ffa657">function</span> MyComponent({ token }) {
+  <span style="color:#ffa657">let</span> interceptorId;
+
+  useEffect(() => {
+    interceptorId = axios.interceptors.request.use((config) => {
+      config.headers.Authorization = `Bearer ${token}`;
+      <span style="color:#ffa657">return</span> config;
+    });
+
+    <span style="color:#6b7280">// 组件卸载时清理拦截器，防止内存泄漏</span>
+    <span style="color:#ffa657">return</span> () => {
+      axios.interceptors.request.eject(interceptorId);
+    };
+  }, [token]);
+
+  <span style="color:#ffa657">return</span> &lt;div&gt;...&lt;/div&gt;;
+}
+      </div>
+    </div>
+    <div class="card">
+      <h3>场景四：创建无拦截器的 axios 实例</h3>
+      <div class="log" style="font-size:0.82rem">
+<span style="color:#6b7280">// 方法1：清空拦截器</span>
+<span style="color:#ffa657">const</span> cleanApi = axios.create();
+cleanApi.interceptors.request.handlers = [];
+cleanApi.interceptors.response.handlers = [];
+
+<span style="color:#6b7280">// 方法2：复制配置但排除拦截器</span>
+<span style="color:#ffa657">const</span> cleanApi2 = axios.create({
+  ...axios.defaults,
+  <span style="color:#6b7280">// 不复制 interceptors</span>
+});
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 6: 自测题 -->
+  <div class="panel" id="panel-quiz">
+    <div class="quiz-box" id="quiz1">
+      <h4>Q1: <code>axios.interceptors.request.use(fn)</code> 返回什么？</h4>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) undefined</div>
+      <div class="quiz-option" onclick="checkQuiz(this, true)">B) 数字 ID（索引）</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) 拦截器函数本身</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">D) Promise 对象</div>
+    </div>
+    <div class="quiz-box" id="quiz2">
+      <h4>Q2: 以下哪个方法可以移除已注册的拦截器？</h4>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) <code>axios.interceptors.request.remove(id)</code></div>
+      <div class="quiz-option" onclick="checkQuiz(this, true)">B) <code>axios.interceptors.request.eject(id)</code></div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) <code>axios.interceptors.request.delete(id)</code></div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">D) <code>axios.interceptors.request.clear(id)</code></div>
+    </div>
+    <div class="quiz-box" id="quiz3">
+      <h4>Q3: eject 一个 ID 后再次 use()，新的 ID 会复用被 eject 的位置吗？</h4>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) 会复用，因为数组中该位置是 null</div>
+      <div class="quiz-option" onclick="checkQuiz(this, true)">B) 不会复用，会在数组末尾添加新项</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) 取决于参数值</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">D) 取决于拦截器类型</div>
+    </div>
+    <div class="quiz-box" id="quiz4">
+      <h4>Q4: 在 React useEffect 中使用拦截器，组件卸载时应该如何处理？</h4>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) 不需要处理，React 会自动清理</div>
+      <div class="quiz-option" onclick="checkQuiz(this, true)">B) 在 useEffect 的 return 函数中调用 eject()</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) 拦截器会随组件自动销毁</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">D) 使用 clearAll() 清空</div>
+    </div>
+    <div class="quiz-box" id="quiz5">
+      <h4>Q5: 全局 axios 实例和 axios.create() 创建的实例，拦截器是否共享？</h4>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) 共享，拦截器是全局的</div>
+      <div class="quiz-option" onclick="checkQuiz(this, true)">B) 不共享，每个实例有独立的拦截器数组</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) 取决于配置</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">D) 只有请求拦截器共享</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Quiz
+    function checkQuiz(el, correct) {
+      const box = el.closest('.quiz-box');
+      if (box.querySelector('.correct') || box.querySelector('.wrong')) return;
+      if (correct) {
+        el.classList.add('correct');
+      } else {
+        el.classList.add('wrong');
+        const correctEl = box.querySelector('.quiz-option:nth-child(2)');
+        if (correctEl) correctEl.classList.add('correct');
+      }
+    }
+
+    // Interactive demo state
+    const state = {
+      reqHandlers: [],
+      resHandlers: [],
+      reqCounter: 0,
+      resCounter: 0,
+      logEntries: []
+    };
+
+    function renderHandlers() {
+      const reqEl = document.getElementById('req-handlers');
+      const resEl = document.getElementById('res-handlers');
+      document.getElementById('req-count').textContent = state.reqHandlers.filter(Boolean).length;
+      document.getElementById('res-count').textContent = state.resHandlers.filter(Boolean).length;
+
+      reqEl.innerHTML = state.reqHandlers.length === 0
+        ? '<span style="font-size:0.82rem;color:#999">暂无请求拦截器</span>'
+        : state.reqHandlers.map((h, i) => `
+          <div class="handler-item ${h === null ? 'null' : ''}">
+            <span class="handler-id">${i}</span>
+            <span class="handler-fn">${h === null ? '(已移除)' : (h.fulfilled?.name || '请求拦截器 #' + i)}</span>
+          </div>`).join('');
+
+      resEl.innerHTML = state.resHandlers.length === 0
+        ? '<span style="font-size:0.82rem;color:#999">暂无响应拦截器</span>'
+        : state.resHandlers.map((h, i) => `
+          <div class="handler-item ${h === null ? 'null' : ''}">
+            <span class="handler-id">${i}</span>
+            <span class="handler-fn">${h === null ? '(已移除)' : (h.fulfilled?.name || '响应拦截器 #' + i)}</span>
+          </div>`).join('');
+    }
+
+    function addLog(text, type = 'info') {
+      state.logEntries.push({ text, type });
+      const area = document.getElementById('log-area');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry ' + type;
+      entry.textContent = '[' + new Date().toLocaleTimeString() + '] ' + text;
+      if (area.querySelector('span')?.style.color === 'rgb(107, 114, 128)') {
+        area.innerHTML = '';
+      }
+      area.appendChild(entry);
+      area.scrollTop = area.scrollHeight;
+      document.getElementById('log-count').textContent = state.logEntries.length;
+    }
+
+    function clearLog() {
+      state.logEntries = [];
+      document.getElementById('log-area').innerHTML = '<span style="color:#6b7280">日志已清空...</span>';
+      document.getElementById('log-count').textContent = '0';
+    }
+
+    function addRequestInterceptor() {
+      const id = axios.interceptors.request.use(
+        function reqHandler(config) {
+          addLog('请求拦截器 #' + state.reqCounter + ' 执行 → 添加 Authorization header', 'req');
+          config.headers['X-Request-Id'] = 'req-' + Date.now();
+          return config;
+        }
+      );
+      // Override name for display
+      id.__displayName = '请求拦截器 #' + state.reqCounter;
+      state.reqHandlers.push({ fulfilled: { name: id.__displayName }, rejected: null });
+      state.reqCounter++;
+      addLog('注册请求拦截器 → ID: ' + (state.reqHandlers.length - 1), 'success');
+      renderHandlers();
+    }
+
+    function addResponseInterceptor() {
+      const id = axios.interceptors.response.use(
+        function resHandler(response) {
+          addLog('响应拦截器 #' + state.resCounter + ' 执行 → 收到响应 ' + response.status, 'res');
+          return response;
+        },
+        function resError(error) {
+          addLog('响应拦截器 #' + state.resCounter + ' 执行 → 响应错误: ' + (error.message || error.code), 'error');
+          return Promise.reject(error);
+        }
+      );
+      id.__displayName = '响应拦截器 #' + state.resCounter;
+      state.resHandlers.push({ fulfilled: { name: id.__displayName }, rejected: null });
+      state.resCounter++;
+      addLog('注册响应拦截器 → ID: ' + (state.resHandlers.length - 1), 'success');
+      renderHandlers();
+    }
+
+    function ejectFirstRequest() {
+      const idx = state.reqHandlers.findIndex(h => h !== null);
+      if (idx === -1) { addLog('无可移除的请求拦截器', 'warn'); return; }
+      axios.interceptors.request.eject(idx);
+      state.reqHandlers[idx] = null;
+      addLog('eject 请求拦截器 ID:' + idx, 'warn');
+      renderHandlers();
+    }
+
+    function ejectFirstResponse() {
+      const idx = state.resHandlers.findIndex(h => h !== null);
+      if (idx === -1) { addLog('无可移除的响应拦截器', 'warn'); return; }
+      axios.interceptors.response.eject(idx);
+      state.resHandlers[idx] = null;
+      addLog('eject 响应拦截器 ID:' + idx, 'warn');
+      renderHandlers();
+    }
+
+    function clearAllRequest() {
+      axios.interceptors.request.handlers = [];
+      state.reqHandlers = [];
+      addLog('清空所有请求拦截器', 'warn');
+      renderHandlers();
+    }
+
+    function clearAllResponse() {
+      axios.interceptors.response.handlers = [];
+      state.resHandlers = [];
+      addLog('清空所有响应拦截器', 'warn');
+      renderHandlers();
+    }
+
+    function clearAllBoth() {
+      clearAllRequest();
+      clearAllResponse();
+    }
+
+    async function simulateRequest() {
+      addLog('发起模拟请求...', 'info');
+      const activeReq = state.reqHandlers.filter(Boolean).length;
+      const activeRes = state.resHandlers.filter(Boolean).length;
+      if (activeReq === 0 && activeRes === 0) {
+        addLog('无拦截器，请求直接发出', 'info');
+      }
+      try {
+        // Simulate by just noting handlers
+        addLog('请求通过 ' + activeReq + ' 个请求拦截器，响应通过 ' + activeRes + ' 个响应拦截器', 'info');
+        addLog('模拟请求完成 (status: 200)', 'success');
+      } catch (e) {
+        addLog('模拟请求失败: ' + e.message, 'error');
+      }
+    }
+
+    // Initialize
+    renderHandlers();
+  </script>
+</body>
+</html>
