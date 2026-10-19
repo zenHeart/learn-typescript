@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeScript 静态类型与运行时行为差异 - 交互演示</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1 { text-align: center; color: #00d4ff; margin-bottom: 30px; font-size: 1.8rem; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; background: #16213e; padding: 15px; border-radius: 10px; }
+    .tab-btn { background: #0f3460; color: #e0e0e0; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+    .tab-btn:hover { background: #00d4ff; color: #1a1a2e; }
+    .tab-btn.active { background: #00d4ff; color: #1a1a2e; font-weight: bold; }
+    .tab-content { display: none; background: #16213e; padding: 25px; border-radius: 10px; margin-bottom: 20px; }
+    .tab-content.active { display: block; }
+    .section { margin-bottom: 25px; }
+    .section h3 { color: #00d4ff; margin-bottom: 12px; font-size: 1.1rem; border-left: 4px solid #00d4ff; padding-left: 12px; }
+    .code-block { background: #0f0f23; padding: 15px; border-radius: 8px; margin: 10px 0; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; overflow-x: auto; border: 1px solid #333; }
+    .code-block .keyword { color: #ff79c6; }
+    .code-block .string { color: #f1fa8c; }
+    .code-block .number { color: #bd93f9; }
+    .code-block .comment { color: #6272a4; }
+    .code-block .function { color: #50fa7b; }
+    .code-block .type { color: #8be9fd; }
+    .output-block { background: #2d2d44; padding: 15px; border-radius: 8px; margin: 10px 0; font-family: 'Fira Code', monospace; font-size: 13px; border-left: 4px solid #50fa7b; }
+    .output-block.error { border-left-color: #ff5555; background: #3d2d2d; }
+    .warning-box { background: #3d3520; border: 1px solid #f1fa8c; padding: 15px; border-radius: 8px; margin: 15px 0; }
+    .danger-box { background: #3d2020; border: 1px solid #ff5555; padding: 15px; border-radius: 8px; margin: 15px 0; }
+    .success-box { background: #203d20; border: 1px solid #50fa7b; padding: 15px; border-radius: 8px; margin: 15px 0; }
+    .info-box { background: #203040; border: 1px solid #00d4ff; padding: 15px; border-radius: 8px; margin: 15px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { padding: 12px; text-align: left; border: 1px solid #333; }
+    th { background: #0f3460; color: #00d4ff; }
+    tr:nth-child(even) { background: #1a1a2e; }
+    .demo-btn { background: #00d4ff; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 10px 5px 10px 0; transition: all 0.2s; }
+    .demo-btn:hover { background: #50fa7b; transform: translateY(-2px); }
+    .demo-btn.danger { background: #ff5555; }
+    .demo-btn.danger:hover { background: #ff6e6e; }
+    .legend { display: flex; gap: 20px; margin: 15px 0; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 8px; }
+    .legend-color { width: 20px; height: 20px; border-radius: 4px; }
+    .summary-table { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 TypeScript 静态类型与运行时行为差异 - 交互演示</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('overview')">📖 总览</button>
+      <button class="tab-btn" onclick="showTab('type-erasure')">🗑️ 类型擦除</button>
+      <button class="tab-btn" onclick="showTab('compilation-options')">⚙️ 编译选项</button>
+      <button class="tab-btn" onclick="showTab('class-fields')">🏗️ Class Field</button>
+      <button class="tab-btn" onclick="showTab('enum')">📦 Enum</button>
+      <button class="tab-btn" onclick="showTab('assertion')">⚠️ 类型断言</button>
+      <button class="tab-btn" onclick="showTab('declaration')">📝 declare</button>
+      <button class="tab-btn" onclick="showTab('conditional')">🔄 条件类型</button>
+      <button class="tab-btn" onclick="showTab('pitfalls')">💥 常见误区</button>
+      <button class="tab-btn" onclick="showTab('runtime')">✅ 运行时验证</button>
+      <button class="tab-btn" onclick="showTab('summary')">📊 总结表</button>
+    </div>
+
+    <!-- 总览 -->
+    <div id="overview" class="tab-content active">
+      <div class="section">
+        <h3>核心问题：编译通过 ≠ 运行时安全</h3>
+        <div class="info-box">
+          <strong>TypeScript 的类型检查仅在编译期生效。</strong> 一旦编译完成，所有类型信息都被擦除，生成的 JavaScript 代码中不包含任何类型保障。
+        </div>
+        <div class="code-block">
+<span class="comment">// TypeScript 代码 - 编译前</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name: <span class="type">string</span>) {
+  <span class="keyword">return</span> <span class="string">"Hello, "</span> + name.toUpperCase();
+}
+
+greet(<span class="keyword">null</span>); <span class="comment">// ❌ 编译报错：Argument of type 'null' is not assignable</span>
+        </div>
+        <div class="code-block">
+<span class="comment">// JavaScript 代码 - 编译后（类型擦除）</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name) {
+  <span class="keyword">return</span> <span class="string">"Hello, "</span> + name.toUpperCase(); <span class="comment">// 运行时可能崩溃！</span>
+}
+
+greet(<span class="keyword">null</span>); <span class="comment">// 运行时错误：Cannot read property 'toUpperCase' of null</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>编译期 vs 运行时的关键差异</h3>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-color" style="background: #50fa7b;"></div> 编译期有效</div>
+          <div class="legend-item"><div class="legend-color" style="background: #ff5555;"></div> 仅运行时有效</div>
+          <div class="legend-item"><div class="legend-color" style="background: #bd93f9;"></div> 编译期和运行时都有效</div>
+        </div>
+        <table>
+          <tr><th>概念</th><th>编译期</th><th>运行时</th></tr>
+          <tr><td>TypeScript 类型注解</td><td style="color:#50fa7b;">✅ 类型检查</td><td style="color:#ff5555;">❌ 不存在</td></tr>
+          <tr><td>strictNullChecks</td><td style="color:#50fa7b;">✅ 报错</td><td style="color:#ff5555;">❌ 无保障</td></tr>
+          <tr><td>as 断言</td><td style="color:#50fa7b;">✅ 类型覆盖</td><td style="color:#ff5555;">❌ 无检查</td></tr>
+          <tr><td>类型守卫 (typeof)</td><td style="color:#50fa7b;">✅ 收窄</td><td style="color:#50fa7b;">✅ 真实检查</td></tr>
+          <tr><td>Enum</td><td style="color:#50fa7b;">✅ 类型检查</td><td style="color:#bd93f9;">⚠️ 普通对象</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3>快速演示</h3>
+        <button class="demo-btn" onclick="runOverviewDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('overview')">🗑️ 清除</button>
+        <div id="overview-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- 类型擦除 -->
+    <div id="type-erasure" class="tab-content">
+      <div class="section">
+        <h3>什么是类型擦除？</h3>
+        <div class="info-box">
+          TypeScript 编译器在编译时会<strong>移除所有类型注解</strong>，生成的 JavaScript 代码中不包含任何类型信息。
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>类型注解消失</h3>
+        <div class="code-block">
+<span class="comment">// TypeScript</span>
+<span class="keyword">const</span> name: <span class="type">string</span> = <span class="string">"TypeScript"</span>;
+<span class="keyword">const</span> version: <span class="type">number</span> = <span class="number">4.9</span>;
+<span class="keyword">const</span> isAwesome: <span class="type">boolean</span> = <span class="keyword">true</span>;
+        </div>
+        <div class="code-block">
+<span class="comment">// 编译后 (JavaScript)</span>
+<span class="keyword">const</span> name = <span class="string">"TypeScript"</span>;
+<span class="keyword">const</span> version = <span class="number">4.9</span>;
+<span class="keyword">const</span> isAwesome = <span class="keyword">true</span>;
+<span class="comment">// 所有类型注解都消失了！</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>泛型被完全移除</h3>
+        <div class="code-block">
+<span class="comment">// TypeScript - 泛型函数</span>
+<span class="keyword">function</span> <span class="function">identity</span>&lt;T&gt;(arg: T): T {
+  <span class="keyword">return</span> arg;
+}
+        </div>
+        <div class="code-block">
+<span class="comment">// 编译后 - T 完全消失</span>
+<span class="keyword">function</span> <span class="function">identity</span>(arg) {
+  <span class="keyword">return</span> arg;
+}
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>typeof T 在运行时永远不对</h3>
+        <div class="code-block">
+<span class="comment">// TypeScript - 尝试在运行时检查泛型类型</span>
+<span class="keyword">function</span> <span class="function">checkType</span>&lt;T&gt;(arg: T) {
+  console.log(<span class="keyword">typeof</span> T); <span class="comment">// ❌ 永远是 undefined 或具体原始类型</span>
+  console.log(<span class="keyword">typeof</span> arg); <span class="comment">// ✅ 这是真实的运行时检查</span>
+}
+        </div>
+        <button class="demo-btn" onclick="runTypeErasureDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('type-erasure')">🗑️ 清除</button>
+        <div id="type-erasure-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- 编译选项 -->
+    <div id="compilation-options" class="tab-content">
+      <div class="section">
+        <h3>strictNullChecks</h3>
+        <div class="warning-box">
+          <strong>编译期有效，运行时无任何保障。</strong><br>
+          即使开启 strictNullChecks，null 和 undefined 在运行时依然是真实存在的值。
+        </div>
+        <div class="code-block">
+<span class="comment">// tsconfig.json</span>
+{
+  <span class="string">"strictNullChecks"</span>: <span class="keyword">true</span>
+}
+        </div>
+        <div class="code-block">
+<span class="comment">// TypeScript - 编译报错</span>
+<span class="keyword">let</span> name: <span class="type">string</span> = <span class="keyword">null</span>; <span class="comment">// ❌ Type 'null' is not assignable to type 'string'</span>
+        </div>
+        <div class="code-block">
+<span class="comment">// 但运行时 JavaScript 根本没有类型！</span>
+<span class="keyword">let</span> name = <span class="keyword">null</span>;
+console.log(name.toUpperCase()); <span class="comment">// 💥 运行时错误！</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>noImplicitAny</h3>
+        <div class="info-box">
+          noImplicitAny 让 TypeScript 对隐式 any 类型报错，但这只是编译期检查，运行时 any 依然是 JavaScript 的动态类型。
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>对比表</h3>
+        <table>
+          <tr><th>编译选项</th><th>编译期行为</th><th>运行时保障</th></tr>
+          <tr><td>strictNullChecks</td><td style="color:#50fa7b;">报错 null/undefined</td><td style="color:#ff5555;">无任何保障</td></tr>
+          <tr><td>noImplicitAny</td><td style="color:#50fa7b;">报错隐式 any</td><td style="color:#ff5555;">无任何保障</td></tr>
+          <tr><td>strict</td><td style="color:#50fa7b;">开启所有严格检查</td><td style="color:#ff5555;">无任何保障</td></tr>
+          <tr><td>noUncheckedIndexedAccess</td><td style="color:#50fa7b;">访问可能 undefined</td><td style="color:#ff5555;">无任何保障</td></tr>
+        </table>
+        <button class="demo-btn" onclick="runCompilationDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('compilation-options')">🗑️ 清除</button>
+        <div id="compilation-options-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Class Field -->
+    <div id="class-fields" class="tab-content">
+      <div class="section">
+        <h3>declare 字段仅用于类型检查</h3>
+        <div class="danger-box">
+          <strong>declare 字段在编译后完全消失！</strong> 运行时会报错 "Cannot read property"，因为属性根本不存在。
+        </div>
+        <div class="code-block">
+<span class="comment">// TypeScript</span>
+<span class="keyword">class</span> <span class="type">MyClass</span> {
+  <span class="keyword">declare</span> value: <span class="type">string</span>; <span class="comment">// 仅类型声明，无运行时代码</span>
+}
+
+<span class="keyword">const</span> obj = <span class="keyword">new</span> MyClass();
+console.log(obj.value); <span class="comment">// ❌ 编译通过，但运行时报错！</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>useDefineForClassFields 影响 emit 方式</h3>
+        <table>
+          <tr><th>选项</th><th>编译行为</th><th>运行时效果</th></tr>
+          <tr><td>true</td><td>使用 Object.defineProperty</td><td>符合 class 标准语义</td></tr>
+          <tr><td>false</td><td>直接赋值</td><td>可能与预期不符</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3>抽象类字段</h3>
+        <div class="info-box">
+          抽象字段在编译期强制子类实现，但运行时就只是普通的类继承，没有特殊处理。
+        </div>
+        <button class="demo-btn" onclick="runClassFieldDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('class-fields')">🗑️ 清除</button>
+        <div id="class-fields-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Enum -->
+    <div id="enum" class="tab-content">
+      <div class="section">
+        <h3>Numeric Enum 编译为双向映射对象</h3>
+        <div class="code-block">
+<span class="comment">// TypeScript</span>
+<span class="keyword">enum</span> <span class="type">Status</span> {
+  Pending,
+  Active,
+  Done
+}
+        </div>
+        <div class="code-block">
+<span class="comment">// 编译后 - 双向映射对象</span>
+<span class="keyword">var</span> Status;
+(<span class="keyword">function</span> (Status) {
+  Status[Status[<span class="string">"Pending"</span> = <span class="number">0</span>]] = <span class="string">"Pending"</span>;
+  Status[Status[<span class="string">"Active"</span> = <span class="number">1</span>]] = <span class="string">"Active"</span>;
+  Status[Status[<span class="string">"Done"</span> = <span class="number">2</span>]] = <span class="string">"Done"</span>;
+})(Status || (Status = {}));
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Enum 可在运行时被修改（危险！）</h3>
+        <div class="danger-box">
+          Enum 在运行时应被视为常量，但技术上可以修改！修改后会影响所有引用。
+        </div>
+        <button class="demo-btn" onclick="runEnumDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('enum')">🗑️ 清除</button>
+        <div id="enum-output" class="output-block" style="display:none;"></div>
+      </div>
+
+      <div class="section">
+        <h3>Const Enum 完全内联</h3>
+        <div class="info-box">
+          Const enum 在编译时内联化，不生成任何运行时对象。但使用 --preserveConstEnums 可以保留。
+        </div>
+      </div>
+    </div>
+
+    <!-- 类型断言 -->
+    <div id="assertion" class="tab-content">
+      <div class="section">
+        <h3>as 只在编译期有效！</h3>
+        <div class="danger-box">
+          <strong>类型断言（as）是危险操作。</strong> 它只在编译期覆盖类型，运行时完全没有类型检查！
+        </div>
+        <div class="code-block">
+<span class="comment">// 危险！编译通过，运行时崩溃</span>
+<span class="keyword">const</span> value = <span class="keyword">null</span> <span class="keyword">as</span> <span class="type">string</span>;
+console.log(value.toUpperCase()); <span class="comment">// 💥 TypeError: Cannot read property 'toUpperCase' of null</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>正确的做法：类型守卫</h3>
+        <div class="success-box">
+          类型守卫（如 typeof）在运行时是真实检查，可以安全地收窄类型。
+        </div>
+        <div class="code-block">
+<span class="comment">// 安全！typeof 在运行时有真实效果</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name: <span class="type">string</span> | <span class="type">null</span>) {
+  <span class="keyword">if</span> (<span class="keyword">typeof</span> name === <span class="string">'string'</span>) {
+    <span class="keyword">return</span> <span class="string">"Hello, "</span> + name.toUpperCase();
+  }
+  <span class="keyword">return</span> <span class="string">"Hello, stranger"</span>;
+}
+        </div>
+      </div>
+
+      <div class="section">
+        <button class="demo-btn" onclick="runAssertionDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('assertion')">🗑️ 清除</button>
+        <div id="assertion-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- declare -->
+    <div id="declaration" class="tab-content">
+      <div class="section">
+        <h3>declare 语句只生成类型</h3>
+        <div class="info-box">
+          declare 语句仅用于类型检查，编译后完全消失，不生成任何 JavaScript 代码。
+        </div>
+        <div class="code-block">
+<span class="comment">// TypeScript</span>
+<span class="keyword">declare</span> <span class="keyword">const</span> GLOBAL_APP: <span class="type">string</span>;
+console.log(GLOBAL_APP); <span class="comment">// 编译报错：GLOBAL_APP 在声明前引用</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>declare global 只影响类型</h3>
+        <div class="warning-box">
+          declare global 扩展全局类型作用域，但不会在运行时创建任何全局变量！
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>三斜线指令</h3>
+        <div class="code-block">
+<span class="comment">/// &lt;reference types="node" /&gt;</span>
+<span class="comment">// 仅用于编译时的类型包含</span>
+<span class="comment">// 运行时无任何作用</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 条件类型 -->
+    <div id="conditional" class="tab-content">
+      <div class="section">
+        <h3>条件类型在编译期求值折叠</h3>
+        <div class="info-box">
+          条件类型 T extends U ? X : Y 在编译后被"折叠"为具体结果类型，运行时不存在条件类型。
+        </div>
+        <div class="code-block">
+<span class="comment">// TypeScript</span>
+<span class="keyword">type</span> IsString&lt;T&gt; = T <span class="keyword">extends</span> <span class="type">string</span> ? <span class="string">"yes"</span> : <span class="string">"no"</span>;
+<span class="keyword">type</span> A = IsString&lt;<span class="type">string</span>&gt;;  <span class="comment">// "yes"</span>
+<span class="keyword">type</span> B = IsString&lt;<span class="type">number</span>&gt;; <span class="comment">// "no"</span>
+        </div>
+        <div class="code-block">
+<span class="comment">// 编译后 - 条件类型消失，只剩具体类型</span>
+<span class="comment">// A = "yes"  (具体字符串字面量)</span>
+<span class="comment">// B = "no"   (具体字符串字面量)</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>never 类型在条件类型中</h3>
+        <div class="code-block">
+<span class="keyword">type</span> ExtractReturn&lt;T&gt; = T <span class="keyword">extends</span> (...args: <span class="keyword">any</span>[]) <span class="keyword">infer</span> R ? R : <span class="keyword">never</span>;
+<span class="keyword">type</span> A = ExtractReturn&lt;<span class="keyword">typeof</span> console.log&gt;; <span class="comment">// void</span>
+<span class="keyword">type</span> B = ExtractReturn&lt;<span class="type">string</span>&gt;; <span class="comment">// never</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <button class="demo-btn" onclick="runConditionalDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('conditional')">🗑️ 清除</button>
+        <div id="conditional-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- 常见误区 -->
+    <div id="pitfalls" class="tab-content">
+      <div class="section">
+        <h3>误区一：编译通过 = 运行时正确</h3>
+        <div class="danger-box">
+          这是最危险的误区！TypeScript 编译成功只说明类型检查通过，不意味着运行时不会出错。
+        </div>
+        <div class="code-block">
+<span class="comment">// 编译通过，但运行时报错</span>
+<span class="keyword">const</span> user = {
+  name: <span class="string">"Alice"</span>,
+  age: <span class="number">25</span>
+};
+
+<span class="keyword">function</span> <span class="function">getEmail</span>(u: <span class="type">{ name: <span class="type">string</span>; age: <span class="type">number</span> }</span>) {
+  <span class="keyword">return</span> u.email.toLowerCase(); <span class="comment">// 编译通过！运行时报错</span>
+}
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>误区二：用 as 假装有类型安全</h3>
+        <div class="danger-box">
+          as 只在编译期有效。运行时 null 还是 null，undefined 还是 undefined。
+        </div>
+        <div class="code-block">
+<span class="comment">// 危险代码</span>
+<span class="keyword">const</span> data = <span class="keyword">await</span> fetch(url);
+<span class="keyword">const</span> json = <span class="keyword">await</span> data.json() <span class="keyword">as</span> <span class="type">{ id: <span class="type">number</span>; name: <span class="type">string</span> }</span>;
+<span class="comment">// 如果 JSON 实际是 { error: "Not Found" }，运行时没有保障！</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>误区三：忽略 undefined/null 的运行时存在</h3>
+        <div class="warning-box">
+          strictNullChecks 只在编译期检查 undefined/null。运行时必须自己处理这些值。
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>误区四：认为接口会在运行时存在</h3>
+        <div class="info-box">
+          接口只是类型约束，在编译后完全消失。运行时的 JavaScript 对象没有任何类型信息。
+        </div>
+        <button class="demo-btn" onclick="runPitfallsDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('pitfalls')">🗑️ 清除</button>
+        <div id="pitfalls-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- 运行时验证 -->
+    <div id="runtime" class="tab-content">
+      <div class="section">
+        <h3>为什么需要运行时验证？</h3>
+        <div class="info-box">
+          TypeScript 的类型检查只在编译期有效。对于来自网络、用户输入、文件等外部数据，必须在运行时进行验证。
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Zod - 运行时验证方案</h3>
+        <div class="code-block">
+<span class="comment">// Zod 示例</span>
+<span class="keyword">import</span> { z } <span class="keyword">from</span> <span class="string">'zod'</span>;
+
+<span class="keyword">const</span> UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string().email()
+});
+
+<span class="comment">// 编译期类型 + 运行时验证</span>
+<span class="keyword">type</span> User = z.infer&lt;<span class="keyword">typeof</span> UserSchema&gt;;
+
+<span class="comment">// 验证数据</span>
+<span class="keyword">const</span> result = UserSchema.safeParse(apiResponse);
+<span class="keyword">if</span> (result.success) {
+  console.log(result.data); <span class="comment">// 类型安全的 User 对象</span>
+} <span class="keyword">else</span> {
+  console.error(result.error); <span class="comment">// 验证失败详情</span>
+}
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>手动验证 vs 自动验证</h3>
+        <table>
+          <tr><th>方式</th><th>编译期安全</th><th>运行期安全</th></tr>
+          <tr><td>纯 TypeScript</td><td style="color:#50fa7b;">✅</td><td style="color:#ff5555;">❌</td></tr>
+          <tr><td>TypeScript + as</td><td style="color:#50fa7b;">✅</td><td style="color:#ff5555;">❌</td></tr>
+          <tr><td>TypeScript + 类型守卫</td><td style="color:#50fa7b;">✅</td><td style="color:#f1fa8c;">⚠️ 需手动</td></tr>
+          <tr><td>Zod/io-ts</td><td style="color:#50fa7b;">✅</td><td style="color:#50fa7b;">✅</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h3>实践建议</h3>
+        <div class="success-box">
+          <ul>
+            <li>对外部数据（API、用户输入、文件）使用运行时验证</li>
+            <li>使用 Zod/io-ts 等库获得编译期 + 运行期的双保险</li>
+            <li>不要过度依赖 as 断言</li>
+            <li>使用类型守卫处理复杂的类型收窄</li>
+          </ul>
+        </div>
+        <button class="demo-btn" onclick="runRuntimeDemo()">▶️ 运行演示</button>
+        <button class="demo-btn danger" onclick="clearOutput('runtime')">🗑️ 清除</button>
+        <div id="runtime-output" class="output-block" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- 总结表 -->
+    <div id="summary" class="tab-content">
+      <div class="section">
+        <h3>TypeScript 概念编译期 vs 运行期对照表</h3>
+        <table class="summary-table">
+          <tr><th>概念</th><th>编译期</th><th>运行期</th><th>危险程度</th></tr>
+          <tr><td>TypeScript 类型注解</td><td style="color:#50fa7b;">✅ 类型检查</td><td style="color:#ff5555;">❌ 不存在</td><td style="color:#ff5555;">🔴 高</td></tr>
+          <tr><td>as 断言</td><td style="color:#50fa7b;">✅ 类型覆盖</td><td style="color:#ff5555;">❌ 无检查</td><td style="color:#ff5555;">🔴 高</td></tr>
+          <tr><td>declare</td><td style="color:#50fa7b;">✅ 类型声明</td><td style="color:#ff5555;">❌ 无代码</td><td style="color:#f1fa8c;">🟡 中</td></tr>
+          <tr><td>strictNullChecks</td><td style="color:#50fa7b;">✅ 报错</td><td style="color:#ff5555;">❌ 无保障</td><td style="color:#f1fa8c;">🟡 中</td></tr>
+          <tr><td>Enum</td><td style="color:#50fa7b;">✅ 类型检查</td><td style="color:#bd93f9;">⚠️ 普通对象</td><td style="color:#f1fa8c;">🟡 中</td></tr>
+          <tr><td>Const Enum</td><td style="color:#50fa7b;">✅ 内联</td><td style="color:#ff5555;">❌ 无对象</td><td style="color:#50fa7b;">🟢 低</td></tr>
+          <tr><td>Interface</td><td style="color:#50fa7b;">✅ 类型检查</td><td style="color:#ff5555;">❌ 不存在</td><td style="color:#ff5555;">🔴 高</td></tr>
