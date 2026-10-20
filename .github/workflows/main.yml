@@ -10,10 +10,20 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Build and Deploy
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+
+    - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
-      env:
-        ACCESS_TOKEN: ${{ secrets.PAGE }}
-        BRANCH: gh-pages
-        FOLDER: docs/.vuepress/dist
-        BUILD_SCRIPT: npm install && npm run build
+      with:
+        token: ${{ secrets.PAGE }}
+        branch: gh-pages
+        folder: docs/.vuepress/dist
