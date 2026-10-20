@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+permissions:
+  contents: write
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -24,6 +26,6 @@ jobs:
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        token: ${{ secrets.PAGE }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
         folder: docs/.vuepress/dist
