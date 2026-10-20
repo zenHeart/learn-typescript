@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Rollup 打包 TypeScript 配置完全指南 | TypeScript 学习指南</title>
+    <meta name="generator" content="VuePress 1.9.10">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/learn-typescript/assets/css/0.styles.1a07db40.css" as="style"><link rel="preload" href="/learn-typescript/assets/js/app.cd2d0b26.js" as="script"><link rel="preload" href="/learn-typescript/assets/js/2.d4a32857.js" as="script"><link rel="preload" href="/learn-typescript/assets/js/1.ba0480a0.js" as="script"><link rel="preload" href="/learn-typescript/assets/js/72.41fb6e0a.js" as="script"><link rel="prefetch" href="/learn-typescript/assets/js/10.c790a7d4.js"><link rel="prefetch" href="/learn-typescript/assets/js/11.38bdc407.js"><link rel="prefetch" href="/learn-typescript/assets/js/12.13c13a73.js"><link rel="prefetch" href="/learn-typescript/assets/js/13.18357f01.js"><link rel="prefetch" href="/learn-typescript/assets/js/14.914f9d2c.js"><link rel="prefetch" href="/learn-typescript/assets/js/15.8efcf96e.js"><link rel="prefetch" href="/learn-typescript/assets/js/16.23e400e4.js"><link rel="prefetch" href="/learn-typescript/assets/js/17.7158f474.js"><link rel="prefetch" href="/learn-typescript/assets/js/18.b64af36a.js"><link rel="prefetch" href="/learn-typescript/assets/js/19.78c6739b.js"><link rel="prefetch" href="/learn-typescript/assets/js/20.b8ff706c.js"><link rel="prefetch" href="/learn-typescript/assets/js/21.d0ca2055.js"><link rel="prefetch" href="/learn-typescript/assets/js/22.8e368534.js"><link rel="prefetch" href="/learn-typescript/assets/js/23.f7fc1216.js"><link rel="prefetch" href="/learn-typescript/assets/js/24.2f821077.js"><link rel="prefetch" href="/learn-typescript/assets/js/25.39f16102.js"><link rel="prefetch" href="/learn-typescript/assets/js/26.0ff71677.js"><link rel="prefetch" href="/learn-typescript/assets/js/27.9c8702c6.js"><link rel="prefetch" href="/learn-typescript/assets/js/28.6cadcfa1.js"><link rel="prefetch" href="/learn-typescript/assets/js/29.5cab1102.js"><link rel="prefetch" href="/learn-typescript/assets/js/3.6d4c5f63.js"><link rel="prefetch" href="/learn-typescript/assets/js/30.4319da6e.js"><link rel="prefetch" href="/learn-typescript/assets/js/31.4b7002b3.js"><link rel="prefetch" href="/learn-typescript/assets/js/32.9c186d05.js"><link rel="prefetch" href="/learn-typescript/assets/js/33.bc2ce6fe.js"><link rel="prefetch" href="/learn-typescript/assets/js/34.bf68d0ce.js"><link rel="prefetch" href="/learn-typescript/assets/js/35.44a32a43.js"><link rel="prefetch" href="/learn-typescript/assets/js/36.78c38886.js"><link rel="prefetch" href="/learn-typescript/assets/js/37.df4bd87d.js"><link rel="prefetch" href="/learn-typescript/assets/js/38.0c68aabc.js"><link rel="prefetch" href="/learn-typescript/assets/js/39.57ccdb6f.js"><link rel="prefetch" href="/learn-typescript/assets/js/4.3e53404d.js"><link rel="prefetch" href="/learn-typescript/assets/js/40.59e3d22e.js"><link rel="prefetch" href="/learn-typescript/assets/js/41.1bc1fa07.js"><link rel="prefetch" href="/learn-typescript/assets/js/42.bb36a34b.js"><link rel="prefetch" href="/learn-typescript/assets/js/43.0fd5f29e.js"><link rel="prefetch" href="/learn-typescript/assets/js/44.5b21e954.js"><link rel="prefetch" href="/learn-typescript/assets/js/45.36e7f74c.js"><link rel="prefetch" href="/learn-typescript/assets/js/46.706a2375.js"><link rel="prefetch" href="/learn-typescript/assets/js/47.c6c41ef6.js"><link rel="prefetch" href="/learn-typescript/assets/js/48.f74876e3.js"><link rel="prefetch" href="/learn-typescript/assets/js/49.637285ef.js"><link rel="prefetch" href="/learn-typescript/assets/js/5.a6c52ea6.js"><link rel="prefetch" href="/learn-typescript/assets/js/50.7dcfe3aa.js"><link rel="prefetch" href="/learn-typescript/assets/js/51.bf2c934f.js"><link rel="prefetch" href="/learn-typescript/assets/js/52.7df8f9f7.js"><link rel="prefetch" href="/learn-typescript/assets/js/53.1e409d62.js"><link rel="prefetch" href="/learn-typescript/assets/js/54.d7fe104b.js"><link rel="prefetch" href="/learn-typescript/assets/js/55.07f8655c.js"><link rel="prefetch" href="/learn-typescript/assets/js/56.d9dd704a.js"><link rel="prefetch" href="/learn-typescript/assets/js/57.c61370f4.js"><link rel="prefetch" href="/learn-typescript/assets/js/58.95b6cc83.js"><link rel="prefetch" href="/learn-typescript/assets/js/59.e54a4c1f.js"><link rel="prefetch" href="/learn-typescript/assets/js/6.31332e71.js"><link rel="prefetch" href="/learn-typescript/assets/js/60.0b01bf3b.js"><link rel="prefetch" href="/learn-typescript/assets/js/61.cf8c50b4.js"><link rel="prefetch" href="/learn-typescript/assets/js/62.a69d4ee0.js"><link rel="prefetch" href="/learn-typescript/assets/js/63.019eb3b0.js"><link rel="prefetch" href="/learn-typescript/assets/js/64.0e757413.js"><link rel="prefetch" href="/learn-typescript/assets/js/65.cc17dbe3.js"><link rel="prefetch" href="/learn-typescript/assets/js/66.0197cc9d.js"><link rel="prefetch" href="/learn-typescript/assets/js/67.76185c3b.js"><link rel="prefetch" href="/learn-typescript/assets/js/68.385f8ac1.js"><link rel="prefetch" href="/learn-typescript/assets/js/69.f49b266c.js"><link rel="prefetch" href="/learn-typescript/assets/js/7.ec9f9474.js"><link rel="prefetch" href="/learn-typescript/assets/js/70.3689ef7b.js"><link rel="prefetch" href="/learn-typescript/assets/js/71.d4771ff7.js"><link rel="prefetch" href="/learn-typescript/assets/js/73.5afeaa65.js"><link rel="prefetch" href="/learn-typescript/assets/js/74.017ff9a2.js"><link rel="prefetch" href="/learn-typescript/assets/js/75.e9f4da48.js"><link rel="prefetch" href="/learn-typescript/assets/js/76.6bedec41.js"><link rel="prefetch" href="/learn-typescript/assets/js/77.f2abde95.js"><link rel="prefetch" href="/learn-typescript/assets/js/78.54db2659.js"><link rel="prefetch" href="/learn-typescript/assets/js/79.42c21544.js"><link rel="prefetch" href="/learn-typescript/assets/js/80.08228243.js"><link rel="prefetch" href="/learn-typescript/assets/js/vendors~docsearch.5b076cc2.js">
+    <link rel="stylesheet" href="/learn-typescript/assets/css/0.styles.1a07db40.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/learn-typescript/" class="home-link router-link-active"><!----> <span class="site-name">TypeScript 学习指南</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/learn-typescript/" class="nav-link">
+  教程
+</a></div><div class="nav-item"><a href="/learn-typescript/cheatsheet/" class="nav-link">
+  cheatsheet
+</a></div><div class="nav-item"><a href="/learn-typescript/new-feature.html" class="nav-link">
+  新特性
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/learn-typescript/" class="nav-link">
+  教程
+</a></div><div class="nav-item"><a href="/learn-typescript/cheatsheet/" class="nav-link">
+  cheatsheet
+</a></div><div class="nav-item"><a href="/learn-typescript/new-feature.html" class="nav-link">
+  新特性
+</a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/learn-typescript/" aria-current="page" class="sidebar-link">TypeScript 概述</a></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>类型系统</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/learn-typescript/tutorial/1.basic-concept.html" class="sidebar-link">快速入门</a></li><li><a href="/learn-typescript/tutorial/2.1.primitive-types.html" class="sidebar-link">原始类型-JavaScript 原始类型</a></li><li><a href="/learn-typescript/tutorial/2.2.special-primitive-types.html" class="sidebar-link">原始类型-void never</a></li><li><a href="/learn-typescript/tutorial/2.3.literal-types.html" class="sidebar-link">原始类型-字面量类型</a></li><li><a href="/learn-typescript/tutorial/2.4.template-literal-type.html" class="sidebar-link">模板字面量(Template Literal Types)</a></li><li><a href="/learn-typescript/tutorial/2.5.enum.html" class="sidebar-link">原始类型-枚举类型</a></li><li><a href="/learn-typescript/tutorial/3.1.object-types.html" class="sidebar-link">对象类型</a></li><li><a href="/learn-typescript/tutorial/3.2.builtin-literal-object.html" class="sidebar-link">对象类型-内建对象和字面量对象</a></li><li><a href="/learn-typescript/tutorial/3.3.array.html" class="sidebar-link">对象类型-数组和元祖</a></li><li><a href="/learn-typescript/tutorial/3.4.function.html" class="sidebar-link">对象类型-函数</a></li><li><a href="/learn-typescript/tutorial/3.5.class.html" class="sidebar-link">对象类型-类</a></li><li><a href="/learn-typescript/tutorial/3.6.class-inheritance.html" class="sidebar-link">类的扩展</a></li><li><a href="/learn-typescript/tutorial/3.7.decorator.html" class="sidebar-link">装饰器</a></li><li><a href="/learn-typescript/tutorial/3.8.interface.html" class="sidebar-link">接口</a></li><li><a href="/learn-typescript/tutorial/3.9.this.html" class="sidebar-link">this</a></li><li><a href="/learn-typescript/tutorial/4.1.union-types.html" class="sidebar-link">联合类型</a></li><li><a href="/learn-typescript/tutorial/4.2.intersection-types.html" class="sidebar-link">交叉类型</a></li><li><a href="/learn-typescript/tutorial/5.generics.html" class="sidebar-link">泛型</a></li><li><a href="/learn-typescript/tutorial/6.1.module.html" class="sidebar-link">模块</a></li><li><a href="/learn-typescript/tutorial/6.2.module-resolution.html" class="sidebar-link">模块解析</a></li><li><a href="/learn-typescript/tutorial/7.namespace.html" class="sidebar-link">命名空间</a></li><li><a href="/learn-typescript/tutorial/8.1.declare.html" class="sidebar-link">申明文件概述</a></li><li><a href="/learn-typescript/tutorial/8.2.declare-ambients.html" class="sidebar-link">申明文件-ambients</a></li><li><a href="/learn-typescript/tutorial/8.3.declare-DefinitelyTyped.html" class="sidebar-link">申明文件-模块定义</a></li><li><a href="/learn-typescript/tutorial/9.config.html" class="sidebar-link">项目配置</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>类型编程</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/learn-typescript/type-program/" class="sidebar-link">类型编程</a></li><li><a href="/learn-typescript/type-program/1.1.index-type.html" class="sidebar-link">索引类型 (index type)</a></li><li><a href="/learn-typescript/type-program/1.2.mapped-type.html" class="sidebar-link">映射类型 (mapped type )</a></li><li><a href="/learn-typescript/type-program/2.conditional-type.html" class="sidebar-link">条件类型 (conditional type)</a></li><li><a href="/learn-typescript/type-program/3.utils-type.html" class="sidebar-link">工具类型</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>理解类型系统</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/learn-typescript/_draft/type-system/type-assertion.html" class="sidebar-link">类型断言</a></li><li><a href="/learn-typescript/_draft/type-system/type-guards.html" class="sidebar-link">导航守卫</a></li><li><a href="/learn-typescript/_draft/type-system/type-inference.html" class="sidebar-link">类型推导</a></li><li><a href="/learn-typescript/_draft/type-system/type-scope.html" class="sidebar-link">类型的作用域</a></li><li><a href="/learn-typescript/_draft/type-system/type-program.html" class="sidebar-link">类型编程</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>工程化</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/learn-typescript/_draft/engineering/ffp.html" class="sidebar-link">函数式编程</a></li><li><a href="/learn-typescript/_draft/engineering/javascript.html" class="sidebar-link">javascript 文件类型检查</a></li><li><a href="/learn-typescript/_draft/engineering/jsx.html" class="sidebar-link">jsx</a></li><li><a href="/learn-typescript/_draft/engineering/vue.html" class="sidebar-link">vue</a></li><li><a href="/learn-typescript/_draft/engineering/performance.html" class="sidebar-link">性能</a></li><li><a href="/learn-typescript/_draft/engineering/validation.html" class="sidebar-link">运行时校验讲解</a></li><li><a href="/learn-typescript/_draft/engineering/test.html" class="sidebar-link">typescript 单元测试</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="rollup-打包-typescript-配置完全指南"><a href="#rollup-打包-typescript-配置完全指南" class="header-anchor">#</a> Rollup 打包 TypeScript 配置完全指南</h1> <h2 id="目录"><a href="#目录" class="header-anchor">#</a> 目录</h2> <ol><li><a href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">核心概念</a></li> <li><a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></li> <li><a href="#%E6%8F%92%E4%BB%B6%E4%BD%93%E7%B3%BB">插件体系</a></li> <li><a href="#tsconfigjson-%E9%85%8D%E7%BD%AE">tsconfig.json 配置</a></li> <li><a href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F">输出格式</a></li> <li><a href="#%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B">完整配置示例</a></li> <li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">常见问题</a></li></ol> <hr> <h2 id="核心概念"><a href="#核心概念" class="header-anchor">#</a> 核心概念</h2> <h3 id="rollup-是什么"><a href="#rollup-是什么" class="header-anchor">#</a> Rollup 是什么</h3> <p>Rollup 是新一代 JavaScript 模块打包工具，专为 ES Module 设计，具有出色的 Tree-shaking 能力。</p> <h3 id="rollup-vs-webpack-vs-vite"><a href="#rollup-vs-webpack-vs-vite" class="header-anchor">#</a> Rollup vs Webpack vs Vite</h3> <table><thead><tr><th>特性</th> <th>Rollup</th> <th>Webpack</th> <th>Vite</th></tr></thead> <tbody><tr><td>定位</td> <td>库/框架打包</td> <td>应用打包</td> <td>开发服务器</td></tr> <tr><td>Tree-shaking</td> <td>✅ 原生支持</td> <td>✅ 支持</td> <td>✅ 基于 Rollup</td></tr> <tr><td>输出格式</td> <td>ES/CJS/UMD/IIFE</td> <td>多格式</td> <td>ES/CJS</td></tr> <tr><td>配置复杂度</td> <td>低</td> <td>高</td> <td>低</td></tr> <tr><td>插件生态</td> <td>适中</td> <td>丰富</td> <td>适中</td></tr></tbody></table> <h3 id="rollup-打包流程"><a href="#rollup-打包流程" class="header-anchor">#</a> Rollup 打包流程</h3> <div class="language- extra-class"><pre class="language-text"><code>Input Files → Plugins → Module Graph → Bundle → Output Plugins → Output Files
+</code></pre></div><hr> <h2 id="环境准备"><a href="#环境准备" class="header-anchor">#</a> 环境准备</h2> <h3 id="安装依赖"><a href="#安装依赖" class="header-anchor">#</a> 安装依赖</h3> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token comment"># 核心依赖</span>
+<span class="token function">npm</span> <span class="token function">install</span> rollup --save-dev
+
+<span class="token comment"># TypeScript 插件</span>
+<span class="token function">npm</span> <span class="token function">install</span> @rollup/plugin-typescript --save-dev
+
+<span class="token comment"># 模块解析插件</span>
+<span class="token function">npm</span> <span class="token function">install</span> @rollup/plugin-node-resolve --save-dev
+
+<span class="token comment"># CommonJS 转换插件</span>
+<span class="token function">npm</span> <span class="token function">install</span> @rollup/plugin-commonjs --save-dev
+
+<span class="token comment"># 生产环境压缩插件</span>
+<span class="token function">npm</span> <span class="token function">install</span> @rollup/plugin-terser --save-dev
+
+<span class="token comment"># TypeScript</span>
+<span class="token function">npm</span> <span class="token function">install</span> typescript --save-dev
+</code></pre></div><hr> <h2 id="插件体系"><a href="#插件体系" class="header-anchor">#</a> 插件体系</h2> <h3 id="_1-rollup-plugin-typescript"><a href="#_1-rollup-plugin-typescript" class="header-anchor">#</a> 1. @rollup/plugin-typescript</h3> <p>TypeScript 编译插件，负责将 TypeScript 代码编译为 JavaScript。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> typescript <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-typescript'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token comment">// tsconfig.json 路径</span>
+      <span class="token literal-property property">tsconfig</span><span class="token operator">:</span> <span class="token string">'./tsconfig.json'</span><span class="token punctuation">,</span>
+      
+      <span class="token comment">// 输出声明文件</span>
+      <span class="token literal-property property">declaration</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">declarationDir</span><span class="token operator">:</span> <span class="token string">'./dist/types'</span><span class="token punctuation">,</span>
+      
+      <span class="token comment">// 是否生成 sourceMap</span>
+      <span class="token literal-property property">sourceMap</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      
+      <span class="token comment">// 编译目标</span>
+      <span class="token literal-property property">compilerOptions</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">target</span><span class="token operator">:</span> <span class="token string">'ES2020'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">module</span><span class="token operator">:</span> <span class="token string">'ESNext'</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="_2-rollup-plugin-node-resolve"><a href="#_2-rollup-plugin-node-resolve" class="header-anchor">#</a> 2. @rollup/plugin-node-resolve</h3> <p>解析 <code>node_modules</code> 中的模块。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> resolve <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-node-resolve'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token comment">// 查找的扩展名</span>
+      <span class="token literal-property property">extensions</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'.js'</span><span class="token punctuation">,</span> <span class="token string">'.ts'</span><span class="token punctuation">,</span> <span class="token string">'.jsx'</span><span class="token punctuation">,</span> <span class="token string">'.tsx'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      
+      <span class="token comment">// 是否将第三方包视为外部依赖</span>
+      <span class="token literal-property property">preferBuiltins</span><span class="token operator">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="_3-rollup-plugin-commonjs"><a href="#_3-rollup-plugin-commonjs" class="header-anchor">#</a> 3. @rollup/plugin-commonjs</h3> <p>将 CommonJS 模块转换为 ES Module。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> commonjs <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-commonjs'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">commonjs</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token comment">// 是否排除依赖</span>
+      <span class="token literal-property property">exclude</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'node_modules/**'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      
+      <span class="token comment">// 自定义转换函数</span>
+      <span class="token literal-property property">transformMixedEsModules</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="_4-rollup-plugin-terser"><a href="#_4-rollup-plugin-terser" class="header-anchor">#</a> 4. @rollup/plugin-terser</h3> <p>生产环境 JavaScript 压缩。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> terser <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-terser'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token function">terser</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token literal-property property">compress</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">drop_console</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">pure_funcs</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'console.log'</span><span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><hr> <h2 id="tsconfig-json-配置"><a href="#tsconfig-json-配置" class="header-anchor">#</a> tsconfig.json 配置</h2> <h3 id="基础配置"><a href="#基础配置" class="header-anchor">#</a> 基础配置</h3> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;compilerOptions&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 编译目标：保持 ES Module 特性，让 Rollup 处理</span>
+    <span class="token property">&quot;target&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ESNext&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;module&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ESNext&quot;</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 模块解析策略</span>
+    <span class="token property">&quot;moduleResolution&quot;</span><span class="token operator">:</span> <span class="token string">&quot;node&quot;</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 严格模式</span>
+    <span class="token property">&quot;strict&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 导出声明</span>
+    <span class="token property">&quot;declaration&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;declarationDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;./dist/types&quot;</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 源码映射</span>
+    <span class="token property">&quot;sourceMap&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 解析根目录</span>
+    <span class="token property">&quot;rootDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;./src&quot;</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 允许合成默认导出</span>
+    <span class="token property">&quot;allowSyntheticDefaultImports&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 支持 ES Module</span>
+    <span class="token property">&quot;esModuleInterop&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 不再编译 node_modules</span>
+    <span class="token property">&quot;skipLibCheck&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 输出目录</span>
+    <span class="token property">&quot;outDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;./dist&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;include&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;src/**/*&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;exclude&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;dist&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="针对-rollup-的特殊配置"><a href="#针对-rollup-的特殊配置" class="header-anchor">#</a> 针对 Rollup 的特殊配置</h3> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;compilerOptions&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 关键：Rollup 需要 ESNext module 以保留 import/export</span>
+    <span class="token property">&quot;target&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ESNext&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;module&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ESNext&quot;</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 避免 TS 注入 helpers</span>
+    <span class="token property">&quot;importHelpers&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 防止 TS 折叠 enum</span>
+    <span class="token property">&quot;preserveConstEnums&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 不生成 __esModule 标记</span>
+    <span class="token property">&quot;esModuleInterop&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;declaration&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><hr> <h2 id="输出格式"><a href="#输出格式" class="header-anchor">#</a> 输出格式</h2> <p>Rollup 支持四种输出格式：</p> <h3 id="_1-es-module-es"><a href="#_1-es-module-es" class="header-anchor">#</a> 1. ES Module (ES)</h3> <p>生成 ES Module 格式，适合现代浏览器和打包工具。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'es'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.mjs'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="_2-commonjs-cjs"><a href="#_2-commonjs-cjs" class="header-anchor">#</a> 2. CommonJS (CJS)</h3> <p>生成 CommonJS 格式，适合 Node.js 环境。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.cjs'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="_3-umd-universal-module-definition"><a href="#_3-umd-universal-module-definition" class="header-anchor">#</a> 3. UMD (Universal Module Definition)</h3> <p>通用模块格式，同时支持 AMD、CommonJS 和全局变量。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'umd'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.umd.js'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'MyLibrary'</span><span class="token punctuation">,</span>  <span class="token comment">// 全局变量名</span>
+    <span class="token literal-property property">globals</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 外部依赖的全局变量名</span>
+      <span class="token literal-property property">lodash</span><span class="token operator">:</span> <span class="token string">'_'</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="_4-iife-immediately-invoked-function-expression"><a href="#_4-iife-immediately-invoked-function-expression" class="header-anchor">#</a> 4. IIFE (Immediately Invoked Function Expression)</h3> <p>自执行函数格式，直接运行于浏览器。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'iife'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.iife.js'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'MyLibrary'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><hr> <h2 id="完整配置示例"><a href="#完整配置示例" class="header-anchor">#</a> 完整配置示例</h2> <h3 id="项目结构"><a href="#项目结构" class="header-anchor">#</a> 项目结构</h3> <div class="language- extra-class"><pre class="language-text"><code>my-library/
+├── src/
+│   ├── index.ts
+│   ├── utils.ts
+│   └── types.ts
+├── dist/
+├── rollup.config.js
+├── tsconfig.json
+└── package.json
+</code></pre></div><h3 id="rollup-config-js"><a href="#rollup-config-js" class="header-anchor">#</a> rollup.config.js</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> resolve <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-node-resolve'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> commonjs <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-commonjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> typescript <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-typescript'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> terser <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-terser'</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 决定是否为生产环境</span>
+<span class="token keyword">const</span> production <span class="token operator">=</span> <span class="token operator">!</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">ROLLUP_WATCH</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 入口文件</span>
+  <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token string">'src/index.ts'</span><span class="token punctuation">,</span>
+  
+  <span class="token comment">// 外部依赖（可选）</span>
+  <span class="token literal-property property">external</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'lodash'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  
+  <span class="token comment">// 插件</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token comment">// TypeScript 编译</span>
+    <span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token literal-property property">tsconfig</span><span class="token operator">:</span> <span class="token string">'./tsconfig.json'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">declaration</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">declarationDir</span><span class="token operator">:</span> <span class="token string">'./dist/types'</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 解析 node_modules</span>
+    <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token literal-property property">extensions</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'.js'</span><span class="token punctuation">,</span> <span class="token string">'.ts'</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// CommonJS 转换</span>
+    <span class="token function">commonjs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    
+    <span class="token comment">// 生产环境压缩</span>
+    production <span class="token operator">&amp;&amp;</span> <span class="token function">terser</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  
+  <span class="token comment">// 输出配置（数组支持多格式输出）</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token comment">// ES Module</span>
+    <span class="token punctuation">{</span>
+      <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'es'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.mjs'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// CommonJS</span>
+    <span class="token punctuation">{</span>
+      <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.cjs.js'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// UMD</span>
+    <span class="token punctuation">{</span>
+      <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'umd'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.umd.js'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'MyLibrary'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">globals</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">lodash</span><span class="token operator">:</span> <span class="token string">'_'</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="package-json-配置"><a href="#package-json-配置" class="header-anchor">#</a> package.json 配置</h3> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;my-library&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;version&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1.0.0&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;module&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;main&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/index.cjs.js&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;module&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/index.mjs&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;types&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/types/index.d.ts&quot;</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;exports&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;.&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;import&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/index.mjs&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;require&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/index.cjs.js&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;types&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/types/index.d.ts&quot;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;scripts&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;build&quot;</span><span class="token operator">:</span> <span class="token string">&quot;rollup -c&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;build:watch&quot;</span><span class="token operator">:</span> <span class="token string">&quot;rollup -c -w&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="tsconfig-json"><a href="#tsconfig-json" class="header-anchor">#</a> tsconfig.json</h3> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;compilerOptions&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;target&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ESNext&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;module&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ESNext&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;moduleResolution&quot;</span><span class="token operator">:</span> <span class="token string">&quot;node&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;strict&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;declaration&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;declarationDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/types&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;sourceMap&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;esModuleInterop&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;skipLibCheck&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;forceConsistentCasingInFileNames&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;outDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;include&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;src/**/*&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;exclude&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;node_modules&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;dist&quot;</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><hr> <h2 id="常见问题"><a href="#常见问题" class="header-anchor">#</a> 常见问题</h2> <h3 id="q1-declaration-文件生成失败"><a href="#q1-declaration-文件生成失败" class="header-anchor">#</a> Q1: declaration 文件生成失败</h3> <p>确保 <code>tsconfig.json</code> 中 <code>declaration: true</code> 且 <code>outDir</code> 正确设置。</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;compilerOptions&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;declaration&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;declarationDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist/types&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;outDir&quot;</span><span class="token operator">:</span> <span class="token string">&quot;dist&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="q2-tree-shaking-不生效"><a href="#q2-tree-shaking-不生效" class="header-anchor">#</a> Q2: Tree-shaking 不生效</h3> <ol><li>确保使用 ES Module 格式输出</li> <li>检查代码没有使用副作用</li> <li>使用 <code>sideEffects: false</code> 在 package.json 中声明</li></ol> <h3 id="q3-外部依赖处理"><a href="#q3-外部依赖处理" class="header-anchor">#</a> Q3: 外部依赖处理</h3> <div class="language-js extra-class"><pre class="language-js"><code><span class="token literal-property property">external</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <span class="token string">'lodash'</span><span class="token punctuation">,</span>
+  <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^@org\/package</span><span class="token regex-delimiter">/</span></span>  <span class="token comment">// 支持正则匹配组织包</span>
+<span class="token punctuation">]</span>
+</code></pre></div><h3 id="q4-类型声明文件导出"><a href="#q4-类型声明文件导出" class="header-anchor">#</a> Q4: 类型声明文件导出</h3> <p>确保所有导出的类型都能被正确识别：</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token comment">// types.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">Config</span> <span class="token punctuation">{</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// index.ts</span>
+<span class="token keyword">export</span> <span class="token punctuation">{</span> Config <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./types'</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="q5-循环依赖"><a href="#q5-循环依赖" class="header-anchor">#</a> Q5: 循环依赖</h3> <p>Rollup 可以正确处理大多数循环依赖，但如果出现问题，考虑：</p> <ol><li>重构代码避免循环依赖</li> <li>使用 <code>context</code> 选项</li> <li>检查 <code>dynamicImport</code> 的使用</li></ol> <hr> <h2 id="参考资源"><a href="#参考资源" class="header-anchor">#</a> 参考资源</h2> <ul><li><a href="https://rollupjs.org/" target="_blank" rel="noopener noreferrer">Rollup 官方文档<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://github.com/rollup/plugins/tree/master/packages/typescript" target="_blank" rel="noopener noreferrer">@rollup/plugin-typescript<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.typescriptlang.org/" target="_blank" rel="noopener noreferrer">TypeScript 官方文档<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/learn-typescript/assets/js/app.cd2d0b26.js" defer></script><script src="/learn-typescript/assets/js/2.d4a32857.js" defer></script><script src="/learn-typescript/assets/js/1.ba0480a0.js" defer></script><script src="/learn-typescript/assets/js/72.41fb6e0a.js" defer></script>
+  </body>
+</html>
